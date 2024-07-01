@@ -42,10 +42,10 @@ const ControlCenter = () => {
             <MenuButton
               ref={buttonRef}
               onClick={() => setisOpen(!isOpen)}
-              className="inline-flex items-center gap-2 rounded-full bg-black px-4 text-sm font-semibold focus:outline-none data-[hover]:bg-gray-800 data-[open]:bg-gray-800 data-[focus]:outline-1 data-[focus]:outline-white"
+              className="inline-flex items-center gap-2 rounded-full bg-black panel-p-default text-sm font-semibold focus:outline-none data-[hover]:bg-gray-800 data-[open]:bg-gray-800 data-[focus]:outline-1 data-[focus]:outline-white"
             >
-              <Network />
-              <Battery percentage={true} />
+              <Network varrient={"icon"} />
+              <Battery percentage={true} varrient={"icon"} />
             </MenuButton>
 
             <Transition
@@ -60,13 +60,16 @@ const ControlCenter = () => {
               <MenuItems
                 ref={menuRef}
                 anchor="bottom end"
-                className="my-1 w-[16%] rounded border border-white/5 bg-[#0f0f0f]/80 text-sm/6"
+                className="my-1 w-[16%] panel-p-default rounded border border-white/5 bg-[#0f0f0f]/80 text-sm/6"
                 onClick={(e) => {
                   e.stopPropagation(); // Prevent the menu from closing
                 }}
               >
                 <MenuItem>
-                  <div>hello</div>
+                  <Network varrient={"info"} />
+                </MenuItem>
+                <MenuItem>
+                  <Battery percentage={true} varrient={"info"} />
                 </MenuItem>
               </MenuItems>
             </Transition>

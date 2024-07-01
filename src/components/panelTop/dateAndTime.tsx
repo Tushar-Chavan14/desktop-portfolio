@@ -51,7 +51,7 @@ const DateAndTime = () => {
             <MenuButton
               ref={buttonRef}
               onClick={() => setisOpen(!isOpen)}
-              className="inline-flex items-center gap-2 rounded-full bg-black py-1 px-4 text-sm/6 font-semibold focus:outline-none data-[hover]:bg-gray-800 data-[open]:bg-gray-800 data-[focus]:outline-1 data-[focus]:outline-white"
+              className="inline-flex items-center gap-2 rounded-full bg-black panel-p-default text-sm/6 font-semibold focus:outline-none data-[hover]:bg-gray-800 data-[open]:bg-gray-800 data-[focus]:outline-1 data-[focus]:outline-white"
             >
               {timeStr}
             </MenuButton>

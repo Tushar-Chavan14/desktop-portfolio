@@ -31,3 +31,7 @@ body {
     text-wrap: balance;
   }
 }
+
+.panel-p-default{
+  @apply py-1 px-4
+}

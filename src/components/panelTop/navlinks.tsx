@@ -9,7 +9,7 @@ const Navlinks = () => {
 
   return (
     <div>
-      <ul className="flex gap-10 bg-black rounded-full px-10 py-1">
+      <ul className="flex gap-10 bg-black rounded-full panel-p-default">
         {links.map((link, index) => (
           <li key={index + link.href}>
             <Link
