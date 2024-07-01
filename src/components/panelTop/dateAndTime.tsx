@@ -6,15 +6,16 @@ import {
   MenuItems,
   Transition,
 } from "@headlessui/react";
-import Calender from "./calender";
+import Calender from "./components/calender";
 import React, {
   useEffect,
   useRef,
   useState,
   MouseEvent as ReactMouseEvent,
+  Fragment,
 } from "react";
 import { formatedDateTime } from "@src/helper";
-import WhetherCard from "./whetherCard";
+import WhetherCard from "./components/whetherCard";
 
 const DateAndTime = () => {
   const { timeStr, dateElements } = formatedDateTime();
@@ -43,8 +44,7 @@ const DateAndTime = () => {
   }, []);
 
   return (
-    <div>
-      {" "}
+    <Fragment>
       <Menu>
         {({ open }) => (
           <>
@@ -98,7 +98,7 @@ const DateAndTime = () => {
           </>
         )}
       </Menu>
-    </div>
+    </Fragment>
   );
 };
 

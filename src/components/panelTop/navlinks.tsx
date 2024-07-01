@@ -2,43 +2,24 @@
 import Link from "next/link";
 import React from "react";
 import { usePathname } from "next/navigation";
+import { navLinks as links } from "@src/constants/panel";
 
 const Navlinks = () => {
   const pathname = usePathname();
-
-  const links = [
-    {
-      name: "Home",
-      href: "/",
-    },
-    {
-      name: "About",
-      href: "/about",
-    },
-    {
-      name: "portfolio",
-      href: "/portfolio",
-    },
-    {
-      name: "Blogs",
-      href: "/blogs",
-    },
-    {
-      name: "Contact",
-      href: "/contact",
-    },
-  ];
 
   return (
     <div>
       <ul className="flex gap-10 bg-black rounded-full px-10 py-1">
         {links.map((link, index) => (
-          <li key={index}>
+          <li key={index + link.href}>
             <Link
               href={link.href}
+              prefetch={true}
               className={`${
-                link.href === pathname ? "text-white" : "text-gray-400"
-              } hover:text-white`}
+                link.href === pathname
+                  ? " text-white bg-indigo-500 hover:text-white px-8 rounded-full "
+                  : "text-gray-400 hover:text-indigo-500"
+              }  transition-all ease-in-out duration-700`}
             >
               {link.name}
             </Link>

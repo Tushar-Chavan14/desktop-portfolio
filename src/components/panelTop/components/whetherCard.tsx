@@ -1,7 +1,7 @@
 import React, { PointerEventHandler, useEffect, useState } from "react";
 import Image from "next/image";
 import useLocationAccess from "@src/hooks/useLocationAccess";
-import { WeatherIcons } from "./weatherIcons";
+import { WeatherIcons } from "@src/constants/panel";
 import { retriveWhether } from "@src/actions";
 import { WeatherResponse } from "@src/types/panel/weather";
 
