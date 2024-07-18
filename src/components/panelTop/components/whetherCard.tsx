@@ -74,7 +74,7 @@ const WhetherCard = () => {
           </p>
 
           <button
-            className="rounded-md bg-indigo-600 px-4"
+            className="rounded-md bg-primary px-4"
             onClick={getLocationFromBrowser}
           >
             click here

@@ -82,8 +82,8 @@ export default function Calender() {
               type="button"
               onClick={() => setselectedDay(day)}
               className={classNames(
-                isEqual(day, selectedDay) && "text-white",
-                !isEqual(day, selectedDay) && isToday(day) && "text-indigo-600",
+                isEqual(day, selectedDay) && "text-secondary",
+                !isEqual(day, selectedDay) && isToday(day) && "text-primary",
                 !isEqual(day, selectedDay) &&
                   !isToday(day) &&
                   isSameMonth(day, firstDayCurrentMonth) &&
@@ -92,9 +92,9 @@ export default function Calender() {
                   !isToday(day) &&
                   !isSameMonth(day, firstDayCurrentMonth) &&
                   "text-gray-900",
-                isEqual(day, selectedDay) && isToday(day) && "bg-indigo-600",
-                isEqual(day, selectedDay) && !isToday(day) && "bg-gray-900",
-                !isEqual(day, selectedDay) && "hover:bg-gray-200/30",
+                isEqual(day, selectedDay) && isToday(day) && "bg-primary",
+                isEqual(day, selectedDay) && !isToday(day) && "bg-primary",
+                !isEqual(day, selectedDay) && "hover:bg-secondary/30",
                 (isEqual(day, selectedDay) || isToday(day)) && "font-semibold",
                 "mx-auto flex h-8 w-8 items-center justify-center rounded-full"
               )}

@@ -63,10 +63,10 @@ const NetworkStatus = ({ varrient }: { varrient: string }) => {
           isValidType && (
             <>
               {online ? (
-                <div className=" flex justify-around items-center ">
+                <div className=" flex gap-4 items-center ">
                   <FiWifi className=" size-4" /> <p>connected</p>
-                  <BsFillArrowDownSquareFill />
-                  <p>{downlink?.toFixed(2)} Mbps</p>
+                  {downlink && <BsFillArrowDownSquareFill />}
+                  {downlink && <p>{downlink?.toFixed(2)} Mbps</p>}
                 </div>
               ) : (
                 <div>

@@ -9,12 +9,15 @@ import {
   MenuItems,
   Transition,
 } from "@headlessui/react";
+import { FaPowerOff } from "react-icons/fa";
+import Shutdown from "./components/shutDown";
 
 const ControlCenter = () => {
   const menuRef = React.useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const [isOpen, setisOpen] = useState<boolean>(false);
+  const [showModal, setshowModal] = useState<boolean>(false);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -60,22 +63,37 @@ const ControlCenter = () => {
               <MenuItems
                 ref={menuRef}
                 anchor="bottom end"
-                className="my-1 w-[16%] panel-p-default rounded border border-white/5 bg-[#0f0f0f]/80 text-sm/6"
+                className="my-1 w-[16%] p-3 rounded-xl space-y-2 border border-white/5 bg-[#0f0f0f]/80 text-sm/6"
                 onClick={(e) => {
                   e.stopPropagation(); // Prevent the menu from closing
                 }}
               >
                 <MenuItem>
-                  <Network varrient={"info"} />
+                  <div className="hover:bg-white/10 w-full cursor-default px-2 py-1 rounded-md">
+                    <Network varrient={"info"} />
+                  </div>
                 </MenuItem>
                 <MenuItem>
-                  <Battery percentage={true} varrient={"info"} />
+                  <div className="hover:bg-white/10 w-full px-2 py-1 cursor-default rounded-md">
+                    <Battery percentage={true} varrient={"info"} />
+                  </div>
+                </MenuItem>
+                <MenuItem>
+                  <button
+                    onClick={() => {
+                      setshowModal((prev) => !prev);
+                    }}
+                    className=" flex gap-4 items-center hover:bg-white/10 w-full px-2 py-1 rounded-md"
+                  >
+                    <FaPowerOff /> power off
+                  </button>
                 </MenuItem>
               </MenuItems>
             </Transition>
           </>
         )}
       </Menu>
+      <Shutdown showModal={showModal} setshowModal={setshowModal} />
     </Fragment>
   );
 };

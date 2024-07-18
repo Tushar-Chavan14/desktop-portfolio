@@ -8,11 +8,15 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      colors: {
+        primary: "#c6a0f6",
+        secondary: "#181926",
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-        mountain: "url('/mountain.jpg')",
+        planet: "url('/planet.jpg')",
       },
     },
   },

@@ -46,13 +46,24 @@ const Battery = ({
     useBattery();
 
   function convertSecondsToMinutes(seconds: number) {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds}`;
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    return `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
   }
 
   if (!supported) {
-    return <PiBatteryWarningFill className="size-5" />;
+    return (
+      <>
+        {varrient === "icon" ? (
+          <PiBatteryWarningFill className={`size-5`} />
+        ) : (
+          <p className="flex gap-4">
+            <PiBatteryWarningFill className={`size-5`} />
+            <span>Not supported</span>
+          </p>
+        )}
+      </>
+    );
   }
 
   return (
@@ -75,14 +86,14 @@ const Battery = ({
             </div>
           ) : (
             varrient === "info" && (
-              <div className=" flex items-center justify-around">
+              <div className=" flex items-center gap-4">
                 <BatteryIcon level={level} charging={charging} />
                 {charging ? (
                   <>
                     <p>
                       {chargingTime && convertSecondsToMinutes(chargingTime)}
                     </p>
-                    <p>untill full</p>
+                    <p className="capitalize">untill full</p>
                   </>
                 ) : (
                   <>
@@ -90,12 +101,13 @@ const Battery = ({
                       {dischargingTime &&
                         convertSecondsToMinutes(dischargingTime)}
                     </p>
-                    <p>remaining</p>
+                    <p className="capitalize">remaining</p>
                   </>
                 )}
                 {percentage && (
-                  <p className=" text-xs font-medium mt-1">
-                    {(level && level * 100)?.toFixed(0)}%
+                  <p className=" text-sm font-medium">
+                    {"("}
+                    {(level && level * 100)?.toFixed(0)}%{")"}
                   </p>
                 )}
               </div>

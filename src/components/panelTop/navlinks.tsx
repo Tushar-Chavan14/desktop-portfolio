@@ -17,8 +17,8 @@ const Navlinks = () => {
               prefetch={true}
               className={`${
                 link.href === pathname
-                  ? " text-white bg-indigo-500 hover:text-white px-8 rounded-full "
-                  : "text-gray-400 hover:text-indigo-500"
+                  ? " text-secondary bg-primary hover:text-secondary px-8 rounded-full "
+                  : "text-gray-400 hover:text-primary"
               }  transition-all ease-in-out duration-700`}
             >
               {link.name}
