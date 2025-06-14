@@ -26,11 +26,13 @@ const BatteryIcon = ({
 
   if (level === 1) {
     return <TiBatteryFull className="size-5" />;
-  } else if (parseInt(level.toFixed(2)) >= 0.75) {
+  } else if (level * 100 >= 75) {
     return <TiBatteryHigh className="size-5" />;
-  } else if (parseInt(level.toFixed(2)) >= 0.5) {
+  } else if (level * 100 >= 50) {
     return <TiBatteryMid className="size-5" />;
-  } else if (parseInt(level.toFixed(2)) < 0.25) {
+  } else if (level * 100 > 25 && level * 100 < 50) {
+    return <TiBatteryMid className="size-5" />;
+  } else if (level * 100 < 25) {
     return <TiBatteryLow className="size-5" />;
   }
 };

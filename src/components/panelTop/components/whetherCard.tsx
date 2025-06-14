@@ -32,7 +32,7 @@ const WhetherCard = () => {
     name: "",
     cod: 0,
   });
-
+  
   const getLocationFromBrowser: PointerEventHandler<HTMLButtonElement> = (
     e
   ) => {
@@ -41,7 +41,7 @@ const WhetherCard = () => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
         setlocation({
-          latitue: position?.coords?.latitude,
+          latitude: position?.coords?.latitude,
           longitude: position?.coords?.longitude,
         });
       });
@@ -61,11 +61,11 @@ const WhetherCard = () => {
       });
 
     return () => {};
-  }, []);
+  }, [location]);
 
   if (!hasLocationAccess) {
     return (
-      <div className="w-full h-full bg-gray-600">
+      <div className="w-full h-full bg-mocha-base">
         <h4 className="text-lg font-medium px-8 py-4">whether Info</h4>
 
         <div className="mt-8 text-center flex flex-col items-center justify-center gap-4">
@@ -86,7 +86,7 @@ const WhetherCard = () => {
 
   if (loading) {
     return (
-      <div className="w-full h-full bg-gray-600">
+      <div className="w-full h-full bg-mocha-base">
         <h4 className="text-lg font-medium px-8 py-4">whether Info</h4>
 
         <div className="mt-8 text-center flex flex-col items-center justify-center gap-4">
@@ -97,7 +97,7 @@ const WhetherCard = () => {
   }
 
   return (
-    <div className="w-full h-full bg-gray-600">
+    <div className="w-full h-full bg-mocha-base">
       <h4 className="text-lg font-medium px-8 py-4">whether Info</h4>
       <div className="mt-8 rounded-md px-3 py-1 flex flex-col items-center justify-center gap-10">
         <div>

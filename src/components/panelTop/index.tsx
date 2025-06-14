@@ -5,9 +5,9 @@ import ControlCenter from "./controlCenter";
 
 const TopPanel = () => {
   return (
-    <div className="w-screen flex justify-between py-1 px-4">
+    <div className="w-screen flex justify-between py-1 px-1 bg-mocha-crust">
       <DateAndTime />
-      <Navlinks />
+      {/* <Navlinks /> */}
       <ControlCenter />
     </div>
   );

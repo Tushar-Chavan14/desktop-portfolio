@@ -1,5 +1,5 @@
 "use client";
-import { Modal } from "@src/components/modal";
+import { Modal } from "@src/components/modals/powerOffModal";
 import { socialLinks } from "@src/constants";
 import React, { useEffect, useState } from "react";
 
