@@ -1,8 +1,12 @@
-import GlobalContextMenu from "@src/components/contextMenu/ContxtMenu";
 import TopPanel from "@src/components/panelTop";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import ModalManager from "@src/components/modals/modalManger";
+import WallpaperWrapper from "@src/components/wallpaperWrap";
+import GlobalContextMenu from "@src/components/contextMenu/globalContextMenu";
+import WindowManager from "@src/components/modals/windows/windowManger";
+import BottomDock from "@src/components/dock/bottomDock";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,11 +24,14 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className}`}>
         <GlobalContextMenu>
-          <div className="h-screen bg-planet bg-fixed bg-cover">
+          <WallpaperWrapper>
             <TopPanel />
             {children}
-          </div>
+            <BottomDock />
+          </WallpaperWrapper>
         </GlobalContextMenu>
+        <ModalManager />
+        <WindowManager />
       </body>
     </html>
   );

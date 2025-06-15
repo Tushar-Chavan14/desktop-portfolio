@@ -1,4 +1,4 @@
-import ModalExample from "@src/components/modals/commanModal";
+import { TextEditorWidowModalExp } from "@src/components/modals/windows/textEditorWindow";
 
 const Placeholder = async ({
   params,
@@ -7,8 +7,8 @@ const Placeholder = async ({
 }) => {
   const routeParams = await params;
 
-  if (routeParams.slug === "modal") {
-    return <ModalExample />;
+  if (routeParams?.slug === "window") {
+    return <TextEditorWidowModalExp />;
   }
 
   return (

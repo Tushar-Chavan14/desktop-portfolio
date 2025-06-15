@@ -1,6 +1,7 @@
 "use client";
 
 import { useContextMenu } from "@src/hooks/useContextMenu";
+import useModalStore from "@src/store/zustore/UseModalStore";
 import { useState, useEffect, useRef } from "react";
 
 interface ContextMenuProps {
@@ -27,6 +28,8 @@ export const ContextMenu = ({
 }: ContextMenuProps) => {
   const menuRef = useRef<HTMLDivElement>(null);
 
+  const { openModal } = useModalStore();
+
   // Define your custom menu items here
   const menuItems: ContextMenuItem[] = [
     {
@@ -47,6 +50,7 @@ export const ContextMenu = ({
       id: "chenge-background",
       label: "Change background...",
       action: () => {
+        openModal("CHANGE_BACKGROUND", {});
         onClose();
       },
     },
@@ -132,46 +136,3 @@ export const ContextMenu = ({
     </div>
   );
 };
-
-
-
-
-
-
-export const ContextMenuProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  useEffect(() => {
-    const disableDefaultContextMenu = (e: MouseEvent) => {
-      e.preventDefault();
-    };
-
-    // Disable default context menu globally
-    document.addEventListener("contextmenu", disableDefaultContextMenu);
-
-    return () => {
-      document.removeEventListener("contextmenu", disableDefaultContextMenu);
-    };
-  }, []);
-
-  return <>{children}</>;
-};
-
-export default function GlobalContextMenu({
-  children,
-}: {
-  children?: React.ReactNode;
-}) {
-  const { showContextMenu, ContextMenuComponent } = useContextMenu();
-
-  return (
-    <ContextMenuProvider>
-      <div onContextMenu={(e) => showContextMenu(e)}>
-        {children}
-        {ContextMenuComponent}
-      </div>
-    </ContextMenuProvider>
-  );
-}

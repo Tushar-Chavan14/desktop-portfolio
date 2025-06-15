@@ -1,16 +1,21 @@
+import { CommonModalProps } from "@src/components/modals/commanModal";
 import { create } from "zustand";
+
+type ModalManagerProps = Omit<CommonModalProps, "children"> & {
+  modalData?: any;
+};
 
 interface ModalStoreState {
   modalType: string;
-  modalProps: Record<string, any>;
-  openModal: (type: string, props?: Record<string, any>) => void;
+  modalProps: ModalManagerProps;
+  openModal: (type: string, props?: ModalManagerProps) => void;
   closeModal: () => void;
 }
 
 const useModalStore = create<ModalStoreState>((set) => ({
   modalType: "",
-  modalProps: {},
-  openModal: (type, props = {}) => {
+  modalProps: {} as ModalManagerProps,
+  openModal: (type, props) => {
     set({ modalType: type, modalProps: props });
   },
   closeModal: () => set({ modalType: "", modalProps: {} }),
