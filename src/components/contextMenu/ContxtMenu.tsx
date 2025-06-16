@@ -1,8 +1,6 @@
 "use client";
-
-import { useContextMenu } from "@src/hooks/useContextMenu";
 import useModalStore from "@src/store/zustore/UseModalStore";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 interface ContextMenuProps {
   x: number;

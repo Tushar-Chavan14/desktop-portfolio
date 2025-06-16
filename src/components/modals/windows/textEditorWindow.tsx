@@ -1,5 +1,4 @@
 "use client";
-import useWindowStore from "@src/store/zustore/useWindowStore";
 import { useState } from "react";
 
 export const TextEditorWindow: React.FC = () => {

@@ -7,6 +7,7 @@ import text from "@src/assets/icons/text.svg";
 import useWindowStore from "@src/store/zustore/useWindowStore";
 import { MouseEventHandler } from "react";
 import { TextEditorWindow } from "../modals/windows/textEditorWindow";
+import BrowserSimulator from "../browserSimulator/browserSimulator";
 
 interface DockIcon {
   name: string;
@@ -25,6 +26,25 @@ export const useDockConfig = () => {
       icon: chrome,
       url: "https://www.google.com/chrome/",
       type: "iframe",
+      clickHandler: (e) => {
+        e.preventDefault();
+        openWindow({
+          id: "chrome-browser",
+          title: "Chrome",
+          component: BrowserSimulator,
+          props: {
+            url: "https://www.google.com/webhp?igu=1",
+          },
+          initialWidth: 1200,
+          initialHeight: 800,
+          initialX: 100,
+          initialY: 50,
+          minWidth: 400,
+          minHeight: 300,
+          resizable: true,
+          draggable: true,
+        });
+      },
     },
     {
       name: "Code",
