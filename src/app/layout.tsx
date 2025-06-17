@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className}`}>
+      <body className={`${inter.className} text-mocha-text dark:text-mocha-text`}>
         <GlobalContextMenu>
           <WallpaperWrapper>
             <TopPanel />

@@ -51,18 +51,62 @@ export const useDockConfig = () => {
       icon: code,
       url: "https://code.visualstudio.com/",
       type: "iframe",
+      clickHandler: (e) => {
+        e.preventDefault();
+        openWindow({
+          id: "code",
+          title: "vscode",
+          component: BrowserSimulator,
+          props: {
+            url: "https://github1s.com/Tushar-Chavan14/desktop-portfolio",
+            showToolBar:false
+          },
+          initialWidth: 1200,
+          initialHeight: 800,
+          initialX: 100,
+          initialY: 50,
+          minWidth: 400,
+          minHeight: 300,
+          resizable: true,
+          draggable: true,
+        });
+      },
     },
     {
       name: "Spotify",
       icon: spotify,
       url: "https://open.spotify.com/",
       type: "iframe",
+      clickHandler: (e) => {
+        e.preventDefault();
+        openWindow({
+          id: "spotify",
+          title: "spotify",
+          component: BrowserSimulator,
+          props: {
+            url: "https://open.spotify.com/embed/album/5KF4xCxDD8ip003hoatFT9?utm_source=generator&theme=0",
+            showToolBar: false,
+          },
+          initialWidth: 500,
+          initialHeight: 800,
+          initialX: 100,
+          initialY: 50,
+          minWidth: 400,
+          minHeight: 300,
+          resizable: true,
+          draggable: true,
+        });
+      },
     },
     {
       name: "Github",
       icon: github,
       url: "",
       type: "iframe",
+      clickHandler: (e) => {
+        e.preventDefault();
+       window.open("https://github.com/Tushar-Chavan14", "_blank");
+      },
     },
     {
       name: "Text Editor",

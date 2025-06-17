@@ -48,7 +48,7 @@ export default function Calender() {
       <div className="flex items-center justify-between">
         <button
           type="button"
-          className="-my-1.5 p-1.5 text-gray-400 hover:text-gray-500"
+          className="-my-1.5 p-1.5 text-mocha-text hover:text-mocha-subtext0"
           onClick={prevMonth}
         >
           <span className="sr-only">Previous month</span>
@@ -60,13 +60,13 @@ export default function Calender() {
         <button
           onClick={nextMonth}
           type="button"
-          className="-my-1.5 -mr-1.5 ml-2 p-1.5 text-gray-400 hover:text-gray-500"
+          className="-my-1.5 -mr-1.5 ml-2 p-1.5 text-mocha-text hover:text-mocha-subtext0"
         >
           <span className="sr-only">Next month</span>
           <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
         </button>
       </div>
-      <div className="mt-5 grid grid-cols-7 text-center text-xs leading-6 text-gray-100 font-semibold">
+      <div className="mt-5 grid grid-cols-7 text-center text-xs leading-6 text-gray-50 font-semibold">
         <div>S</div>
         <div>M</div>
         <div>T</div>
@@ -83,17 +83,17 @@ export default function Calender() {
               onClick={() => setselectedDay(day)}
               className={classNames(
                 isEqual(day, selectedDay) && "text-secondary",
-                !isEqual(day, selectedDay) && isToday(day) && "text-primary",
+                !isEqual(day, selectedDay) && isToday(day) && "text-mocha-mauve",
                 !isEqual(day, selectedDay) &&
                   !isToday(day) &&
                   isSameMonth(day, firstDayCurrentMonth) &&
-                  "text-gray-300",
+                  "text-mocha-text",
                 !isEqual(day, selectedDay) &&
                   !isToday(day) &&
                   !isSameMonth(day, firstDayCurrentMonth) &&
-                  "text-gray-900",
-                isEqual(day, selectedDay) && isToday(day) && "bg-primary",
-                isEqual(day, selectedDay) && !isToday(day) && "bg-primary",
+                  "text-mocha-overlay1",
+                isEqual(day, selectedDay) && isToday(day) && "bg-mocha-mauve",
+                isEqual(day, selectedDay) && !isToday(day) && "bg-mocha-mauve",
                 !isEqual(day, selectedDay) && "hover:bg-secondary/30",
                 (isEqual(day, selectedDay) || isToday(day)) && "font-semibold",
                 "mx-auto flex h-8 w-8 items-center justify-center rounded-full"
