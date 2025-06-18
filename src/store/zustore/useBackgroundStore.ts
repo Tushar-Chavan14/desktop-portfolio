@@ -15,9 +15,9 @@ interface BackgroundStore {
 const useBackgroundStore = create<BackgroundStore>()(
   persist(
     (set, get) => ({
-      currentBackground: "/assets/bgs/car-wreck.jpg", // Default background
+      currentBackground: "/assets/bgs/car-wreck.png", // Default background
       availableBackgrounds: [],
-      selectedBackground: "/assets/bgs/car-wreck.jpg",
+      selectedBackground: "/assets/bgs/car-wreck.png",
 
       setCurrentBackground: (bg: string) => set({ currentBackground: bg }),
 

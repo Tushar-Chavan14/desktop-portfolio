@@ -18,7 +18,9 @@ const WallpaperWrapper = ({ children }: { children: React.ReactNode }) => {
     };
 
     loadBackgrounds();
-  }, [setAvailableBackgrounds]);
+  }, []);
+
+  console.log("Current Background:", currentBackground);
 
   return (
     <div

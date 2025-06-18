@@ -8,6 +8,7 @@ import useWindowStore from "@src/store/zustore/useWindowStore";
 import { MouseEventHandler } from "react";
 import { TextEditorWindow } from "../modals/windows/textEditorWindow";
 import BrowserSimulator from "../browserSimulator/browserSimulator";
+import Terminal from "../terminal/terminal";
 
 interface DockIcon {
   name: string;
@@ -59,7 +60,7 @@ export const useDockConfig = () => {
           component: BrowserSimulator,
           props: {
             url: "https://github1s.com/Tushar-Chavan14/desktop-portfolio",
-            showToolBar:false
+            showToolBar: false,
           },
           initialWidth: 1200,
           initialHeight: 800,
@@ -105,7 +106,7 @@ export const useDockConfig = () => {
       type: "iframe",
       clickHandler: (e) => {
         e.preventDefault();
-       window.open("https://github.com/Tushar-Chavan14", "_blank");
+        window.open("https://github.com/Tushar-Chavan14", "_blank");
       },
     },
     {
@@ -135,6 +136,22 @@ export const useDockConfig = () => {
       icon: terminal,
       url: "https://www.iterm2.com/",
       type: "none",
+      clickHandler: (e) => {
+        e.preventDefault();
+        openWindow({
+          id: "terminal-window",
+          title: "Terminal",
+          component: Terminal,
+          initialWidth: 800,
+          initialHeight: 600,
+          initialX: 100,
+          initialY: 100,
+          minWidth: 400,
+          minHeight: 300,
+          resizable: true,
+          draggable: true,
+        });
+      },
     },
   ];
 
