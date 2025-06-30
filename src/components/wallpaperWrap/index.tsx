@@ -20,8 +20,6 @@ const WallpaperWrapper = ({ children }: { children: React.ReactNode }) => {
     loadBackgrounds();
   }, []);
 
-  console.log("Current Background:", currentBackground);
-
   return (
     <div
       className="h-screen bg-fixed bg-cover bg-center -z-50 transition-all duration-500 ease-in-out"
