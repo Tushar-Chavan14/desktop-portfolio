@@ -1,41 +1,26 @@
 "use client";
-import { useContextMenu } from "@src/hooks/useContextMenu";
-import { useEffect } from "react";
 
-export const ContextMenuProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  useEffect(() => {
-    const disableDefaultContextMenu = (e: MouseEvent) => {
-      e.preventDefault();
-    };
+import { useCallback, useState, type ReactNode } from "react";
+import { ContextMenu } from "./ContxtMenu";
 
-    // Disable default context menu globally
-    document.addEventListener("contextmenu", disableDefaultContextMenu);
-
-    return () => {
-      document.removeEventListener("contextmenu", disableDefaultContextMenu);
-    };
-  }, []);
-
-  return <>{children}</>;
-};
-
-export default function GlobalContextMenu({
-  children,
-}: {
-  children?: React.ReactNode;
-}) {
-  const { showContextMenu, ContextMenuComponent } = useContextMenu();
+/**
+ * Wraps the desktop surface. Right-clicking the wallpaper or icons shows the
+ * desktop menu; inside windows the browser's own menu still works (copy, etc.).
+ */
+export default function DesktopContextMenu({ children }: { children: ReactNode }) {
+  const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
+  const close = useCallback(() => setMenu(null), []);
 
   return (
-    <ContextMenuProvider>
-      <div onContextMenu={(e) => showContextMenu(e)}>
-        {children}
-        {ContextMenuComponent}
-      </div>
-    </ContextMenuProvider>
+    <div
+      className="h-full w-full"
+      onContextMenu={(e) => {
+        e.preventDefault();
+        setMenu({ x: e.clientX, y: e.clientY });
+      }}
+    >
+      {children}
+      {menu && <ContextMenu key={`${menu.x}-${menu.y}`} x={menu.x} y={menu.y} onClose={close} />}
+    </div>
   );
 }

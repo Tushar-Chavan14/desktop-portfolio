@@ -1,110 +1,83 @@
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+"use client";
+
+import { useState } from "react";
+import { PiCaretLeftBold, PiCaretRightBold } from "react-icons/pi";
 import {
-  add,
+  addMonths,
   eachDayOfInterval,
   endOfMonth,
   endOfWeek,
   format,
-  isEqual,
+  isSameDay,
   isSameMonth,
   isToday,
-  parse,
+  startOfMonth,
   startOfToday,
   startOfWeek,
 } from "date-fns";
-import { useState } from "react";
 
-function classNames(...classes: any[]) {
-  return classes.filter(Boolean).join(" ");
-}
+const WEEKDAYS = ["S", "M", "T", "W", "T", "F", "S"];
 
-export default function Calender() {
+const navButton =
+  "grid size-7 place-items-center rounded-lg text-mocha-subtext1 transition hover:bg-mocha-surface1 hover:text-mocha-text active:scale-95 focus-visible:outline-2 focus-visible:outline-mocha-mauve";
+
+export default function Calendar() {
   const today = startOfToday();
+  const [month, setMonth] = useState(startOfMonth(today));
+  const [selected, setSelected] = useState(today);
 
-  const [selectedDay, setselectedDay] = useState(today);
-  const [selectedMonth, setselectedMonth] = useState<string>(
-    format(today, "MMM-yyyy")
-  );
-
-  let firstDayCurrentMonth = parse(selectedMonth, "MMM-yyyy", new Date());
-
-  const eachDays = eachDayOfInterval({
-    start: startOfWeek(firstDayCurrentMonth),
-    end: endOfWeek(endOfMonth(firstDayCurrentMonth)),
+  const days = eachDayOfInterval({
+    start: startOfWeek(month),
+    end: endOfWeek(endOfMonth(month)),
   });
-
-  const nextMonth = () => {
-    let firstDayNextMonth = add(firstDayCurrentMonth, { months: 1 });
-    setselectedMonth(format(firstDayNextMonth, "MMM-yyyy"));
-  };
-
-  const prevMonth = () => {
-    let firstDayPrevMonth = add(firstDayCurrentMonth, { months: -1 });
-    setselectedMonth(format(firstDayPrevMonth, "MMM-yyyy"));
-  };
 
   return (
     <div>
       <div className="flex items-center justify-between">
-        <button
-          type="button"
-          className="-my-1.5 p-1.5 text-mocha-text hover:text-mocha-subtext0"
-          onClick={prevMonth}
-        >
-          <span className="sr-only">Previous month</span>
-          <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
-        </button>
-        <h2 className=" text-base font-bold text-gray-100">
-          {format(firstDayCurrentMonth, "MMMM")}
-        </h2>
-        <button
-          onClick={nextMonth}
-          type="button"
-          className="-my-1.5 -mr-1.5 ml-2 p-1.5 text-mocha-text hover:text-mocha-subtext0"
-        >
-          <span className="sr-only">Next month</span>
-          <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
-        </button>
+        <h3 className="text-sm font-semibold text-mocha-text">{format(month, "MMMM yyyy")}</h3>
+        <div className="flex items-center gap-1">
+          <button type="button" className={navButton} onClick={() => setMonth(addMonths(month, -1))}>
+            <span className="sr-only">Previous month</span>
+            <PiCaretLeftBold className="size-3.5" aria-hidden />
+          </button>
+          <button type="button" className={navButton} onClick={() => setMonth(addMonths(month, 1))}>
+            <span className="sr-only">Next month</span>
+            <PiCaretRightBold className="size-3.5" aria-hidden />
+          </button>
+        </div>
       </div>
-      <div className="mt-5 grid grid-cols-7 text-center text-xs leading-6 text-gray-50 font-semibold">
-        <div>S</div>
-        <div>M</div>
-        <div>T</div>
-        <div>W</div>
-        <div>T</div>
-        <div>F</div>
-        <div>S</div>
-      </div>
-      <div className="mt-2 grid grid-cols-7 text-sm">
-        {eachDays.map((day, dayIdx) => (
-          <div key={dayIdx} className={classNames("py-2")}>
-            <button
-              type="button"
-              onClick={() => setselectedDay(day)}
-              className={classNames(
-                isEqual(day, selectedDay) && "text-secondary",
-                !isEqual(day, selectedDay) && isToday(day) && "text-mocha-mauve",
-                !isEqual(day, selectedDay) &&
-                  !isToday(day) &&
-                  isSameMonth(day, firstDayCurrentMonth) &&
-                  "text-mocha-text",
-                !isEqual(day, selectedDay) &&
-                  !isToday(day) &&
-                  !isSameMonth(day, firstDayCurrentMonth) &&
-                  "text-mocha-overlay1",
-                isEqual(day, selectedDay) && isToday(day) && "bg-mocha-mauve",
-                isEqual(day, selectedDay) && !isToday(day) && "bg-mocha-mauve",
-                !isEqual(day, selectedDay) && "hover:bg-secondary/30",
-                (isEqual(day, selectedDay) || isToday(day)) && "font-semibold",
-                "mx-auto flex h-8 w-8 items-center justify-center rounded-full"
-              )}
-            >
-              <time dateTime={format(day, "yyy-MM-dd")}>
-                {format(day, "d")}
-              </time>
-            </button>
-          </div>
+
+      <div className="mt-3 grid grid-cols-7 text-center text-[11px] font-medium text-mocha-overlay1">
+        {WEEKDAYS.map((d, i) => (
+          <div key={i}>{d}</div>
         ))}
+      </div>
+
+      <div className="mt-1 grid grid-cols-7 text-sm tabular-nums">
+        {days.map((day) => {
+          const isSelected = isSameDay(day, selected);
+          const inMonth = isSameMonth(day, month);
+          return (
+            <div key={day.toISOString()} className="py-0.5">
+              <button
+                type="button"
+                onClick={() => setSelected(day)}
+                aria-pressed={isSelected}
+                className={`mx-auto grid size-8 place-items-center rounded-full transition focus-visible:outline-2 focus-visible:outline-mocha-mauve ${
+                  isSelected
+                    ? "bg-mocha-mauve font-semibold text-mocha-crust"
+                    : isToday(day)
+                      ? "font-semibold text-mocha-mauve hover:bg-mocha-surface1"
+                      : inMonth
+                        ? "text-mocha-text hover:bg-mocha-surface1"
+                        : "text-mocha-overlay0 hover:bg-mocha-surface1"
+                }`}
+              >
+                <time dateTime={format(day, "yyyy-MM-dd")}>{format(day, "d")}</time>
+              </button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

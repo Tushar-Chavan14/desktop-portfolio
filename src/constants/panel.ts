@@ -42,26 +42,3 @@ export const WeatherIcons: {
   "50n": o50n,
   default: unknown,
 };
-
-export const navLinks = [
-  {
-    name: "Home",
-    href: "/",
-  },
-  {
-    name: "About",
-    href: "/about",
-  },
-  {
-    name: "portfolio",
-    href: "/portfolio",
-  },
-  {
-    name: "Blogs",
-    href: "/blogs",
-  },
-  {
-    name: "Contact",
-    href: "/contact",
-  },
-];

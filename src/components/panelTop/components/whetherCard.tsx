@@ -1,129 +1,110 @@
-import React, { PointerEventHandler, useEffect, useState } from "react";
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
-import useLocationAccess from "@src/hooks/useLocationAccess";
+import { PiMapPinFill, PiWarningCircle } from "react-icons/pi";
 import { WeatherIcons } from "@src/constants/panel";
 import { retriveWhether } from "@src/actions";
-import { WeatherResponse } from "@src/types/panel/weather";
+import type { WeatherResponse } from "@src/types/panel/weather";
 
-const WhetherCard = () => {
-  const { location, hasLocationAccess, setlocation } = useLocationAccess();
-  const [loading, setloading] = useState<boolean>(false);
-  const [weatherData, setweatherData] = useState<WeatherResponse>({
-    coord: { lon: 0, lat: 0 },
-    weather: [{ id: 0, main: "", description: "", icon: "" }],
-    base: "",
-    main: {
-      temp: 0,
-      feels_like: 0,
-      temp_min: 0,
-      temp_max: 0,
-      pressure: 0,
-      humidity: 0,
-      sea_level: 0,
-      grnd_level: 0,
-    },
-    visibility: 0,
-    wind: { speed: 0, deg: 0, gust: 0 },
-    clouds: { all: 0 },
-    dt: 0,
-    sys: { country: "", sunrise: 0, sunset: 0 },
-    timezone: 0,
-    id: 0,
-    name: "",
-    cod: 0,
-  });
-  
-  const getLocationFromBrowser: PointerEventHandler<HTMLButtonElement> = (
-    e
-  ) => {
-    e?.preventDefault();
+type Status = "idle" | "locating" | "loading" | "ready" | "denied" | "error";
 
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setlocation({
-          latitude: position?.coords?.latitude,
-          longitude: position?.coords?.longitude,
-        });
-      });
+const WeatherCard = () => {
+  const [status, setStatus] = useState<Status>("idle");
+  const [weather, setWeather] = useState<WeatherResponse | null>(null);
+
+  const load = useCallback(() => {
+    if (!("geolocation" in navigator)) {
+      setStatus("error");
+      return;
     }
-  };
+    setStatus("locating");
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords }) => {
+        setStatus("loading");
+        try {
+          const data = await retriveWhether({ latitude: coords.latitude, longitude: coords.longitude });
+          if (!data?.main) throw new Error("No weather data");
+          setWeather(data);
+          setStatus("ready");
+        } catch {
+          setStatus("error");
+        }
+      },
+      (err) => setStatus(err.code === err.PERMISSION_DENIED ? "denied" : "error"),
+      { maximumAge: 10 * 60_000, timeout: 10_000 }
+    );
+  }, []);
 
+  // If the visitor already granted location, fetch straight away; never prompt unasked.
   useEffect(() => {
-    setloading(true);
-    retriveWhether(location)
-      .then((data) => {
-        setweatherData(data);
-        setloading(false);
+    navigator.permissions
+      ?.query({ name: "geolocation" })
+      .then((p) => {
+        if (p.state === "granted") load();
+        if (p.state === "denied") setStatus("denied");
       })
-      .catch((err) => {
-        console.log(err);
-        setloading(false);
-      });
+      .catch(() => {});
+  }, [load]);
 
-    return () => {};
-  }, [location]);
-
-  if (!hasLocationAccess) {
+  if (status === "ready" && weather) {
+    const icon = WeatherIcons[weather.weather[0]?.icon] ?? WeatherIcons.default;
     return (
-      <div className="w-full h-full bg-mocha-base">
-        <h4 className="text-lg font-medium px-8 py-4">whether Info</h4>
-
-        <div className="mt-8 text-center flex flex-col items-center justify-center gap-4">
-          <p className="px-4">
-            please provide location access to get whether status
-          </p>
-
-          <button
-            className="rounded-md bg-primary px-4"
-            onClick={getLocationFromBrowser}
-          >
-            click here
-          </button>
+      <div className="flex h-full flex-col justify-between gap-4">
+        <div>
+          <p className="text-xs font-medium text-mocha-subtext0">Weather</p>
+          <p className="mt-0.5 truncate text-sm font-medium text-mocha-text">{weather.name}</p>
         </div>
+        <div className="flex items-end justify-between gap-2">
+          <p className="text-4xl font-light tracking-tight text-mocha-text tabular-nums">
+            {Math.round(weather.main.temp)}°
+          </p>
+          <Image src={icon} alt={weather.weather[0]?.description ?? "Weather"} width={52} height={52} />
+        </div>
+        <p className="text-sm text-mocha-subtext1 capitalize">
+          {weather.weather[0]?.description}
+          <span className="text-mocha-overlay1"> · feels {Math.round(weather.main.feels_like)}°</span>
+        </p>
       </div>
     );
   }
 
-  if (loading) {
+  if (status === "locating" || status === "loading") {
     return (
-      <div className="w-full h-full bg-mocha-base">
-        <h4 className="text-lg font-medium px-8 py-4">whether Info</h4>
-
-        <div className="mt-8 text-center flex flex-col items-center justify-center gap-4">
-          <p className="px-4">Loading whether status please wait</p>
-        </div>
+      <div className="flex h-full flex-col gap-3" aria-busy="true" aria-label="Loading weather">
+        <div className="h-3 w-16 animate-pulse rounded bg-mocha-surface1" />
+        <div className="h-4 w-28 animate-pulse rounded bg-mocha-surface1" />
+        <div className="mt-auto h-10 w-20 animate-pulse rounded bg-mocha-surface1" />
+        <div className="h-3 w-24 animate-pulse rounded bg-mocha-surface1" />
       </div>
     );
   }
 
   return (
-    <div className="w-full h-full bg-mocha-base">
-      <h4 className="text-lg font-medium px-8 py-4">whether Info</h4>
-      <div className="mt-8 rounded-md px-3 py-1 flex flex-col items-center justify-center gap-10">
-        <div>
-          <h2 className="text-xl font-semibold">{weatherData?.name}</h2>
-        </div>
-
-        <div className="mb-2 text-3xl font-semibold">
-          {weatherData?.main?.temp.toFixed(0)}°c
-        </div>
-        <div>
-          <Image
-            src={
-              WeatherIcons[weatherData?.weather[0]?.icon] ||
-              WeatherIcons["default"]
-            }
-            alt="wheterIcons"
-            width={50}
-            height={50}
-          />
-        </div>
-        <div>
-          <p>{weatherData?.weather[0]?.description}</p>
-        </div>
-      </div>
+    <div className="flex h-full flex-col gap-3">
+      <p className="text-xs font-medium text-mocha-subtext0">Weather</p>
+      {status === "denied" || status === "error" ? (
+        <p className="flex items-start gap-2 text-sm text-mocha-subtext1">
+          <PiWarningCircle className="mt-0.5 size-4 shrink-0 text-mocha-yellow" aria-hidden />
+          {status === "denied"
+            ? "Location access is blocked. Allow it in your browser to see local weather."
+            : "Couldn't load the weather right now."}
+        </p>
+      ) : (
+        <p className="text-sm text-mocha-subtext1">Share your location to see the weather where you are.</p>
+      )}
+      {status !== "denied" && (
+        <button
+          type="button"
+          onClick={load}
+          className="mt-auto inline-flex items-center justify-center gap-2 rounded-lg bg-mocha-surface1 px-3 py-1.5 text-sm font-medium text-mocha-text transition hover:bg-mocha-surface2 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-mocha-mauve"
+        >
+          <PiMapPinFill className="size-4" aria-hidden />
+          {status === "error" ? "Try again" : "Use my location"}
+        </button>
+      )}
     </div>
   );
 };
 
-export default WhetherCard;
+export default WeatherCard;

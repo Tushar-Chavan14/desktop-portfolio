@@ -81,7 +81,7 @@ const BackgroundGrid: React.FC<{}> = ({}) => {
 
             {/* Currently Active Indicator */}
             {currentBackground === imagePath && (
-              <div className="absolute top-2 left-2 px-2 py-1 bg-mocha-green rounded text-xs font-medium text-white">
+              <div className="absolute top-2 left-2 px-2 py-1 bg-mocha-green rounded-sm text-xs font-medium text-white">
                 Active
               </div>
             )}
@@ -95,7 +95,7 @@ const BackgroundGrid: React.FC<{}> = ({}) => {
             <p className="text-center">
               No backgrounds found. Add some images to the
               <br />
-              <code className="bg-mocha-surface1 px-2 py-1 rounded text-xs">
+              <code className="bg-mocha-surface1 px-2 py-1 rounded-sm text-xs">
                 public/assets/bgs/
               </code>
               <br />

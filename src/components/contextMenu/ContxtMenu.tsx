@@ -1,136 +1,118 @@
 "use client";
+
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { motion } from "motion/react";
+import type { IconType } from "react-icons";
+import {
+  PiArrowClockwiseBold,
+  PiDotsNineBold,
+  PiImageSquareBold,
+  PiInfoBold,
+  PiSignpostBold,
+  PiSquaresFourBold,
+  PiTerminalWindowBold,
+} from "react-icons/pi";
 import useModalStore from "@src/store/zustore/UseModalStore";
-import { useEffect, useRef } from "react";
+import useWindowStore from "@src/store/zustore/useWindowStore";
+import useShellStore from "@src/store/zustore/useShellStore";
+import useDesktopStore from "@src/store/zustore/useDesktopStore";
+import { Z } from "@src/constants/layout";
 
 interface ContextMenuProps {
   x: number;
   y: number;
   onClose: () => void;
-  targetElement?: HTMLElement;
 }
 
-interface ContextMenuItem {
-  id: string;
-  label: string;
-  icon?: string;
-  action: () => void;
-  separator?: boolean;
-  disabled?: boolean;
-}
+type MenuEntry = { id: string; label: string; icon: IconType; action: () => void } | { id: string; separator: true };
 
-export const ContextMenu = ({
-  x,
-  y,
-  onClose,
-  targetElement,
-}: ContextMenuProps) => {
+export const ContextMenu = ({ x, y, onClose }: ContextMenuProps) => {
   const menuRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState({ x, y });
+  const openModal = useModalStore((s) => s.openModal);
+  const openApp = useWindowStore((s) => s.openApp);
+  const openActivities = useShellStore((s) => s.openActivities);
+  const startTour = useShellStore((s) => s.startTour);
+  const resetPositions = useDesktopStore((s) => s.resetPositions);
 
-  const { openModal } = useModalStore();
-
-  // Define your custom menu items here
-  const menuItems: ContextMenuItem[] = [
-    {
-      id: "refresh",
-      label: "Refresh",
-      action: () => {
-        window.location.reload();
-        onClose();
-      },
-    },
-    // {
-    //   id: "separator2",
-    //   label: "",
-    //   separator: true,
-    //   action: () => {},
-    // },
-    {
-      id: "chenge-background",
-      label: "Change background...",
-      action: () => {
-        openModal("CHANGE_BACKGROUND", {});
-        onClose();
-      },
-    },
+  const entries: MenuEntry[] = [
+    { id: "terminal", label: "Open terminal", icon: PiTerminalWindowBold, action: () => openApp("terminal") },
+    { id: "apps", label: "Show apps", icon: PiDotsNineBold, action: openActivities },
+    { id: "sep-1", separator: true },
+    { id: "wallpaper", label: "Change wallpaper...", icon: PiImageSquareBold, action: () => openModal("CHANGE_BACKGROUND", {}) },
+    { id: "arrange", label: "Arrange icons", icon: PiSquaresFourBold, action: resetPositions },
+    { id: "sep-2", separator: true },
+    { id: "tour", label: "Take the tour", icon: PiSignpostBold, action: startTour },
+    { id: "welcome", label: "About this desktop", icon: PiInfoBold, action: () => openApp("welcome") },
+    { id: "refresh", label: "Refresh", icon: PiArrowClockwiseBold, action: () => window.location.reload() },
   ];
 
+  // Measure after mount and keep the menu inside the viewport.
+  useLayoutEffect(() => {
+    const rect = menuRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setPosition({
+      x: Math.min(x, window.innerWidth - rect.width - 8),
+      y: Math.min(y, window.innerHeight - rect.height - 8),
+    });
+    menuRef.current?.querySelector<HTMLButtonElement>("button")?.focus();
+  }, [x, y]);
+
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        onClose();
+    const onPointer = (e: MouseEvent) => {
+      if (!menuRef.current?.contains(e.target as Node)) onClose();
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault();
+        const items = Array.from(menuRef.current?.querySelectorAll<HTMLButtonElement>("button") ?? []);
+        const i = items.indexOf(document.activeElement as HTMLButtonElement);
+        const next = e.key === "ArrowDown" ? (i + 1) % items.length : (i - 1 + items.length) % items.length;
+        items[next]?.focus();
       }
     };
-
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleEscape);
-
+    document.addEventListener("mousedown", onPointer);
+    document.addEventListener("keydown", onKey);
+    window.addEventListener("blur", onClose);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleEscape);
+      document.removeEventListener("mousedown", onPointer);
+      document.removeEventListener("keydown", onKey);
+      window.removeEventListener("blur", onClose);
     };
   }, [onClose]);
 
-  // Adjust position if menu would go off screen
-  const adjustPosition = () => {
-    if (!menuRef.current) return { x, y };
-
-    const menuRect = menuRef.current.getBoundingClientRect();
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-
-    let adjustedX = x;
-    let adjustedY = y;
-
-    if (x + menuRect.width > viewportWidth) {
-      adjustedX = viewportWidth - menuRect.width - 10;
-    }
-
-    if (y + menuRect.height > viewportHeight) {
-      adjustedY = viewportHeight - menuRect.height - 10;
-    }
-
-    return { x: adjustedX, y: adjustedY };
-  };
-
-  const { x: adjustedX, y: adjustedY } = adjustPosition();
-
   return (
-    <div
+    <motion.div
       ref={menuRef}
-      className="fixed z-50 bg-[#232634] rounded-xl shadow-xl p-2 min-w-72"
-      style={{
-        left: adjustedX,
-        top: adjustedY,
-      }}
+      role="menu"
+      aria-label="Desktop"
+      initial={{ opacity: 0, scale: 0.97 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.12, ease: "easeOut" }}
+      className="fixed min-w-60 origin-top-left rounded-xl border border-white/10 bg-mocha-mantle/90 p-1.5 shadow-[inset_0_1px_0_rgb(255_255_255/0.06),0_18px_40px_-12px_rgb(17_17_27/0.9)] backdrop-blur-2xl"
+      style={{ left: position.x, top: position.y, zIndex: Z.contextMenu }}
+      onContextMenu={(e) => e.preventDefault()}
     >
-      {menuItems.map((item) => {
-        if (item.separator) {
-          return <div key={item.id} className="h-px bg-gray-600 mx-2 my-1" />;
-        }
-
-        return (
+      {entries.map((entry) =>
+        "separator" in entry ? (
+          <div key={entry.id} role="separator" className="mx-2 my-1 h-px bg-white/5" />
+        ) : (
           <button
-            key={item.id}
-            onClick={item.action}
-            disabled={item.disabled}
-            className={`
-              w-full text-left px-4 py-1.5 text-sm text-white hover:bg-gray-700 hover:text-purple-300 
-              disabled:text-gray-500 disabled:cursor-not-allowed
-              flex items-center space-x-3 transition-colors duration-150
-              rounded-lg
-            `}
+            key={entry.id}
+            role="menuitem"
+            type="button"
+            onClick={() => {
+              entry.action();
+              onClose();
+            }}
+            className="flex w-full items-center gap-3 rounded-lg px-2.5 py-1.5 text-left text-sm text-mocha-text outline-none transition-colors hover:bg-white/10 focus-visible:bg-white/10"
           >
-            {item.icon && <span className="text-base">{item.icon}</span>}
-            <span>{item.label}</span>
+            <entry.icon className="size-4 text-mocha-subtext0" aria-hidden />
+            {entry.label}
           </button>
-        );
-      })}
-    </div>
+        )
+      )}
+    </motion.div>
   );
 };

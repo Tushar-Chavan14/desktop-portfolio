@@ -1,122 +1,151 @@
 "use client";
 
-import React, { MouseEventHandler, useState } from "react";
-import { FcManager } from "react-icons/fc";
+import { useEffect, useRef, useState } from "react";
+import { motion, useAnimationControls, useReducedMotion } from "motion/react";
+import { apps, desktopApps, type AppId } from "@src/apps/meta";
+import { AppIcon } from "@src/components/appIcon/AppIcon";
+import useDesktopStore, { type Cell } from "@src/store/zustore/useDesktopStore";
+import useWindowStore from "@src/store/zustore/useWindowStore";
 
-interface GridItem2 {
-  id: string;
-  clickHandler: MouseEventHandler<HTMLButtonElement>;
-  index: number;
-  icon: React.FC<{ size?: number }>;
-  label: string;
+const CELL_W = 100;
+const CELL_H = 108;
+const PADDING = 12;
+
+const cellToPoint = ({ col, row }: Cell) => ({ x: PADDING + col * CELL_W, y: PADDING + row * CELL_H });
+
+const useGridSize = (ref: React.RefObject<HTMLDivElement | null>) => {
+  const [size, setSize] = useState({ cols: 1, rows: 1 });
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const update = () =>
+      setSize({
+        cols: Math.max(1, Math.floor((el.clientWidth - PADDING * 2) / CELL_W)),
+        rows: Math.max(1, Math.floor((el.clientHeight - PADDING * 2) / CELL_H)),
+      });
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [ref]);
+  return size;
+};
+
+interface IconProps {
+  id: AppId;
+  cell: Cell;
+  grid: { cols: number; rows: number };
+  selected: boolean;
+  onSelect: () => void;
 }
 
-interface DraggableGridProps {
-  iconItems: GridItem2[];
-}
+const DesktopIcon = ({ id, cell, grid, selected, onSelect }: IconProps) => {
+  const meta = apps[id];
+  const controls = useAnimationControls();
+  const reduce = useReducedMotion();
+  const moveIcon = useDesktopStore((s) => s.moveIcon);
+  const openApp = useWindowStore((s) => s.openApp);
+  const dragged = useRef(false);
 
-const DraggableGrid: React.FC<DraggableGridProps> = ({ iconItems }) => {
-  const [gridItems, setGridItems] = useState<(GridItem2 | null)[]>(() => {
-    const items: (GridItem2 | null)[] = Array(55).fill(null);
+  // Clamp to the visible grid so icons never disappear after a resize.
+  const visible = { col: Math.min(cell.col, grid.cols - 1), row: Math.min(cell.row, grid.rows - 1) };
 
-    iconItems.forEach((item) => {
-      if (item.index >= 0 && item.index < 55) {
-        items[item.index] = item;
-      }
-    });
-
-    return items;
-  });
-
-  const [draggedItem, setDraggedItem] = useState<GridItem2 | null>(null);
-  const [draggedFromIndex, setDraggedFromIndex] = useState<number | null>(null);
-  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
-
-  const handleDragStart = (
-    e: React.DragEvent<HTMLDivElement>,
-    index: number
-  ) => {
-    if (gridItems[index]) {
-      setDraggedItem(gridItems[index]);
-      setDraggedFromIndex(index);
-      e.dataTransfer.effectAllowed = "move";
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-  };
-
-  const handleDragEnter = (
-    e: React.DragEvent<HTMLDivElement>,
-    index: number
-  ) => {
-    e.preventDefault();
-    setDragOverIndex(index);
-  };
-
-  const handleDrop = (
-    e: React.DragEvent<HTMLDivElement>,
-    dropIndex: number
-  ) => {
-    e.preventDefault();
-
-    if (draggedItem && draggedFromIndex !== null) {
-      if (gridItems[dropIndex] === null) {
-        const newGridItems = [...gridItems];
-        newGridItems[draggedFromIndex] = null; // Remove from original position
-        newGridItems[dropIndex] = draggedItem; // Place in new position
-        setGridItems(newGridItems);
-      }
-    }
-
-    setDraggedItem(null);
-    setDraggedFromIndex(null);
-    setDragOverIndex(null);
-  };
-
-  const handleDragEnd = () => {
-    setDraggedItem(null);
-    setDraggedFromIndex(null);
-    setDragOverIndex(null);
-  };
+  useEffect(() => {
+    controls.start(cellToPoint(visible), reduce ? { duration: 0 } : { type: "spring", stiffness: 500, damping: 38 });
+  }, [controls, reduce, visible.col, visible.row]);
 
   return (
-    <>
-      <div className="grid grid-rows-5 grid-cols-11  w-full h-full">
-        {gridItems.map((item, index) => (
-          <div
-            key={index}
-            className={`
-            flex items-center justify-center
-              ${item ? "cursor-grab" : "cursor-default"}
-              ${dragOverIndex === index ? "bg-mocha-mauve/20" : ""}
-              ${index === draggedFromIndex ? "opacity-50" : ""}
-              transition-all duration-200
-            `}
-            draggable={!!item}
-            onDragStart={(e) => handleDragStart(e, index)}
-            onDragOver={handleDragOver}
-            onDragEnter={(e) => handleDragEnter(e, index)}
-            onDrop={(e) => handleDrop(e, index)}
-            onDragEnd={handleDragEnd}
-          >
-            {item && (
-              <button
-                onClick={item.clickHandler}
-                className="focus:outline-none hover:scale-110 transition-transform duration-200"
-              >
-                <div>
-                  <item.icon size={75} />
-                  <label>{item.label}</label>
-                </div>
-              </button>
-            )}
-          </div>
-        ))}
-      </div>
-    </>
+    <motion.button
+      type="button"
+      drag
+      dragMomentum={false}
+      dragElastic={0}
+      initial={cellToPoint(visible)}
+      animate={controls}
+      whileDrag={{ scale: 1.06, zIndex: 10, cursor: "grabbing" }}
+      onDragStart={() => {
+        dragged.current = true;
+        onSelect();
+      }}
+      onDragEnd={(_e, info) => {
+        const start = cellToPoint(visible);
+        const x = start.x + info.offset.x;
+        const y = start.y + info.offset.y;
+        const target = {
+          col: Math.min(grid.cols - 1, Math.max(0, Math.round((x - PADDING) / CELL_W))),
+          row: Math.min(grid.rows - 1, Math.max(0, Math.round((y - PADDING) / CELL_H))),
+        };
+        if (target.col === visible.col && target.row === visible.row) {
+          controls.start(start, { type: "spring", stiffness: 500, damping: 38 });
+        } else {
+          moveIcon(id, target);
+        }
+        // Let the click that ends a drag through without opening the app.
+        setTimeout(() => (dragged.current = false), 0);
+      }}
+      onClick={(e) => {
+        e.stopPropagation();
+        if (!dragged.current) onSelect();
+      }}
+      onDoubleClick={() => openApp(id)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") openApp(id);
+      }}
+      aria-label={`${meta.title}. Double-click to open.`}
+      aria-pressed={selected}
+      className={`group absolute top-0 left-0 flex w-[92px] flex-col items-center gap-1.5 rounded-xl px-1 pt-2 pb-1.5 outline-none select-none focus-visible:ring-2 focus-visible:ring-mocha-mauve/70 ${
+        selected ? "bg-mocha-mauve/20 ring-1 ring-mocha-mauve/40" : "hover:bg-white/10"
+      }`}
+    >
+      <AppIcon icon={meta.icon} label="" size={52} />
+      <span
+        className={`line-clamp-2 rounded px-1 text-center text-[12.5px] leading-tight font-medium text-white [text-shadow:0_1px_3px_rgb(17_17_27/0.9)] ${
+          selected ? "bg-mocha-mauve/60" : ""
+        }`}
+      >
+        {meta.title}
+      </span>
+    </motion.button>
+  );
+};
+
+const DraggableGrid = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const grid = useGridSize(ref);
+  const positions = useDesktopStore((s) => s.positions);
+  const [selected, setSelected] = useState<AppId | null>(null);
+  const [hydrated, setHydrated] = useState(false);
+
+  // Icon positions come from localStorage; render after hydration to avoid a jump.
+  useEffect(() => {
+    if (useDesktopStore.persist.hasHydrated()) setHydrated(true);
+    return useDesktopStore.persist.onFinishHydration(() => setHydrated(true));
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className="relative h-full w-full"
+      onClick={() => setSelected(null)}
+      role="group"
+      aria-label="Desktop"
+    >
+      {hydrated &&
+        desktopApps.map((id) => {
+          const cell = positions[id];
+          if (!cell) return null;
+          return (
+            <DesktopIcon
+              key={id}
+              id={id}
+              cell={cell}
+              grid={grid}
+              selected={selected === id}
+              onSelect={() => setSelected(id)}
+            />
+          );
+        })}
+    </div>
   );
 };
 

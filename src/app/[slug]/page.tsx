@@ -1,16 +1,32 @@
-const Placeholder = async ({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) => {
-  const routeParams = await params;
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { apps, type AppId } from "@src/apps/meta";
+import Desktop from "@src/components/shell/Desktop";
+import PortfolioSummary from "@src/components/shell/PortfolioSummary";
+
+// Every app is deep-linkable: /about, /projects, /resume, /terminal, ...
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return Object.keys(apps).map((slug) => ({ slug }));
+}
+
+const isAppId = (slug: string): slug is AppId => slug in apps;
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  if (!isAppId(slug)) return {};
+  return { title: apps[slug].title, description: apps[slug].description };
+}
+
+export default async function AppPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  if (!isAppId(slug)) notFound();
 
   return (
-    <div>
-      <h1>Coming Soon: {routeParams?.slug}</h1>
-      <p>This page is under development.</p>
-    </div>
+    <>
+      <PortfolioSummary />
+      <Desktop initialApp={slug} />
+    </>
   );
-};
-
-export default Placeholder;
+}

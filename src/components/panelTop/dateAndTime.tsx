@@ -1,104 +1,44 @@
 "use client";
-import {
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-  Transition,
-} from "@headlessui/react";
-import Calender from "./components/calender";
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  MouseEvent as ReactMouseEvent,
-  Fragment,
-} from "react";
-import { formatedDateTime } from "@src/helper";
-import WhetherCard from "./components/whetherCard";
+
+import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
+import { format } from "date-fns";
+import Calendar from "./components/calender";
+import WeatherCard from "./components/whetherCard";
+import { useNow } from "@src/hooks/useNow";
+import { panelButton, panelSurface } from "./styles";
 
 const DateAndTime = () => {
-  const { timeStr, dateElements } = formatedDateTime();
-
-  const menuRef = React.useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-
-  const [isOpen, setisOpen] = useState<boolean>(false);
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      menuRef.current &&
-      !menuRef.current.contains(event.target as Node) &&
-      buttonRef.current &&
-      !buttonRef.current.contains(event.target as Node)
-    ) {
-      setisOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  const now = useNow();
 
   return (
-    <Fragment>
-      <Menu>
-        {/* {({ open }) => ( */}
-        {/* <> */}
-        <MenuButton
-          ref={buttonRef}
-          onClick={() => setisOpen(!isOpen)}
-          className="inline-flex items-center gap-2 rounded-lg bg-mocha-crust panel-p-default text-sm/6 font-semibold focus:outline-none data-[hover]:bg-mocha-base data-[open]:bg-gray-800 data-[focus]:outline-1 data-[focus]:outline-white"
-        >
-          {timeStr}
-        </MenuButton>
-        <Transition
-          show={isOpen}
-          enter="transition ease-out duration-75"
-          enterFrom="opacity-0 scale-95"
-          enterTo="opacity-100 scale-100"
-          leave="transition ease-in duration-100"
-          leaveFrom="opacity-100 scale-100"
-          leaveTo="opacity-0 scale-95"
-        >
-          <MenuItems
-            ref={menuRef}
-            anchor="bottom start"
-            className=" w-1/3 my-1 rounded border border-white/5 bg-mocha-crust/80 text-sm/6"
-            onClick={(e) => {
-              e.stopPropagation(); // Prevent the menu from closing
-            }}
-          >
-            <MenuItem>
-              <div className="flex gap-2 px-2 py-2 leading-10">
-                <div className="w-1/2">
-                  <WhetherCard />
-                </div>
-                <div className=" w-1/2 flex flex-col flex-wrap gap-2">
-                  <div className="w-ful  flex flex-col flex-1 rounded-md px-3 py-1 bg-mocha-base">
-                    <p className=" text-lg font-medium">
-                      {dateElements?.dayName}
-                    </p>
-                    <h3 className=" text-2xl font-light">
-                      {dateElements?.monthInFull} {dateElements?.day}{" "}
-                      {dateElements?.year}
-                    </h3>
-                  </div>
-                  <div className="rounded-md px-3 py-1 bg-mocha-base">
-                    <Calender />
-                  </div>
-                </div>
-              </div>
-            </MenuItem>
-          </MenuItems>
-        </Transition>
-        {/* </> */}
-        {/* )} */}
-      </Menu>
-    </Fragment>
+    <Popover className="relative">
+      <PopoverButton className={`${panelButton} min-w-36 justify-center tabular-nums`}>
+        {now ? format(now, "EEE MMM d  h:mm a") : " "}
+      </PopoverButton>
+
+      <PopoverPanel
+        anchor={{ to: "bottom", gap: 8 }}
+        transition
+        className={`${panelSurface} w-[min(36rem,calc(100vw-1rem))] p-3`}
+      >
+        <div className="grid gap-3 sm:grid-cols-[1fr_1.25fr]">
+          <div className="flex flex-col gap-3">
+            <div className="rounded-xl bg-mocha-surface0/70 p-4">
+              <p className="text-sm font-medium text-mocha-subtext0">{now && format(now, "EEEE")}</p>
+              <p className="mt-1 text-2xl font-semibold tracking-tight text-mocha-text">
+                {now && format(now, "MMMM d, yyyy")}
+              </p>
+            </div>
+            <div className="flex-1 rounded-xl bg-mocha-surface0/70 p-4">
+              <WeatherCard />
+            </div>
+          </div>
+          <div className="rounded-xl bg-mocha-surface0/70 p-4">
+            <Calendar />
+          </div>
+        </div>
+      </PopoverPanel>
+    </Popover>
   );
 };
 

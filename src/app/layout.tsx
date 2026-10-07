@@ -1,38 +1,44 @@
-import TopPanel from "@src/components/panelTop";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import ModalManager from "@src/components/modals/modalManger";
-import WallpaperWrapper from "@src/components/wallpaperWrap";
-import GlobalContextMenu from "@src/components/contextMenu/globalContextMenu";
-import WindowManager from "@src/components/modals/windows/windowManger";
-import BottomDock from "@src/components/dock/bottomDock";
+import { profile } from "@src/data/profile";
 
-const inter = Inter({ subsets: ["latin"] });
+const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
+
+const description = `${profile.role} with ${profile.yearsOfExperience} years building microservices and Next.js apps. Explore my work through a Linux-style desktop.`;
 
 export const metadata: Metadata = {
-  title: "Portfolio",
-  description: "learn about tushar chavan's journey",
+  title: {
+    default: `${profile.name} | ${profile.role}`,
+    template: `%s | ${profile.name}`,
+  },
+  description,
+  authors: [{ name: profile.name, url: profile.contact.linkedin }],
+  openGraph: {
+    type: "website",
+    title: `${profile.name} | ${profile.role}`,
+    description,
+  },
+  twitter: {
+    card: "summary",
+    title: `${profile.name} | ${profile.role}`,
+    description,
+  },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export const viewport: Viewport = {
+  themeColor: "#11111b",
+  colorScheme: "dark",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} text-mocha-text dark:text-mocha-text`}>
-        <GlobalContextMenu>
-          <WallpaperWrapper>
-            <TopPanel />
-            {children}
-            <BottomDock />
-          </WallpaperWrapper>
-        </GlobalContextMenu>
-        <ModalManager />
-        <WindowManager />
-      </body>
+    <html lang="en" className={`dark ${geist.variable} ${geistMono.variable}`} data-theme="dark">
+      <body className="bg-mocha-crust font-sans text-mocha-text antialiased">{children}</body>
     </html>
   );
 }

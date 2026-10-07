@@ -38,11 +38,11 @@ const useBackgroundStore = create<BackgroundStore>()(
           // If the removed background was selected, reset to default
           selectedBackground:
             state.selectedBackground === bgPath
-              ? "/assets/bgs/car-wreck.jpg"
+              ? "/assets/bgs/car-wreck.png"
               : state.selectedBackground,
           currentBackground:
             state.currentBackground === bgPath
-              ? "/assets/bgs/car-wreck.jpg"
+              ? "/assets/bgs/car-wreck.png"
               : state.currentBackground,
         }));
       },

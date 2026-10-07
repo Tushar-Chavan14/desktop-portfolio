@@ -21,7 +21,6 @@ const ChangeBackgroundModal: FC<
   return (
     <CommonModal
       isOpen={isOpen}
-      onOpenChange={onClose}
       variant="normal"
       title="Change background"
       onClose={onClose}
@@ -30,14 +29,13 @@ const ChangeBackgroundModal: FC<
       footerButtons={[
         {
           label: "Cancel",
-          onClick: onClose,
-          variant: "bordered",
-          color: "default",
+          onPress: onClose,
+          variant: "outline",
         },
         {
           label: "Apply Changes",
-          onClick: handleApplyChanges,
-          color: "secondary",
+          onPress: handleApplyChanges,
+          variant: "primary",
           isDisabled: !isChangesPending,
         },
       ]}

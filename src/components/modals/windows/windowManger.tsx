@@ -1,41 +1,36 @@
 "use client";
 
-import React from "react";
-;
+import { AnimatePresence } from "motion/react";
 import useWindowStore from "@src/store/zustore/useWindowStore";
-import CommonWindow from "../commanWindow/commanWindow";
+import { appComponents } from "@src/apps/registry";
+import { TOP_BAR_HEIGHT } from "@src/constants/layout";
+import Window from "@src/components/window/Window";
 
-const WindowManager: React.FC = () => {
-  const { windows, closeWindow, minimizeWindow } = useWindowStore();
+/**
+ * Renders every open window inside the workspace (the area below the top bar).
+ * Minimised windows stay mounted so apps like Terminal keep their state.
+ */
+const WindowManager = () => {
+  const windows = useWindowStore((s) => s.windows);
+  const focusedId = useWindowStore((s) => s.focusedId);
 
   return (
-    <>
-      {Object.entries(windows).map(([id, window]) => {
-        if (!window.isOpen || window.isMinimized) return null;
-
-        const WindowComponent = window.component;
-
-        return (
-          <CommonWindow
-            key={id}
-            title={window.title}
-            isOpen={window.isOpen}
-            onClose={() => closeWindow(id)}
-            onMinimize={() => minimizeWindow(id)}
-            initialWidth={window.initialWidth}
-            initialHeight={window.initialHeight}
-            initialX={window.initialX}
-            initialY={window.initialY}
-            minWidth={window.minWidth}
-            minHeight={window.minHeight}
-            resizable={window.resizable}
-            draggable={window.draggable}
-          >
-            <WindowComponent {...window.props} />
-          </CommonWindow>
-        );
-      })}
-    </>
+    <div
+      className="pointer-events-none fixed inset-x-0 bottom-0 [&>*]:pointer-events-auto"
+      style={{ top: TOP_BAR_HEIGHT }}
+    >
+      <AnimatePresence>
+        {windows.map((win) => {
+          const App = appComponents[win.appId];
+          const isFocused = win.id === focusedId;
+          return (
+            <Window key={win.id} win={win} isFocused={isFocused}>
+              <App {...win.props} windowId={win.id} isFocused={isFocused} />
+            </Window>
+          );
+        })}
+      </AnimatePresence>
+    </div>
   );
 };
 
