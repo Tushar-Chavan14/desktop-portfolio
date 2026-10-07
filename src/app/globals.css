@@ -106,10 +106,3 @@
 @utility scrollbar-track-mocha-surface0 {
   --scrollbar-track: var(--color-mocha-surface0);
 }
-
-/* Overview page: endless logo strip (the list is rendered twice, so -50% loops seamlessly) */
-@keyframes marquee {
-  to {
-    transform: translateX(-50%);
-  }
-}

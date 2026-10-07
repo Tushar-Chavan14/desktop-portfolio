@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import {
   PiCheckBold,
   PiCopyBold,
@@ -8,13 +8,13 @@ import {
   PiGithubLogoBold,
   PiLinkedinLogoBold,
   PiMediumLogoBold,
-  PiPaperPlaneTiltBold,
   PiPhoneBold,
 } from "react-icons/pi";
 import type { IconType } from "react-icons";
 import { profile } from "@src/data/profile";
 import type { AppComponentProps } from "../types";
 import { buttonClass } from "../ui";
+import ContactForm from "@src/components/contact/ContactForm";
 
 const CopyButton = ({ value, label }: { value: string; label: string }) => {
   const [copied, setCopied] = useState(false);
@@ -71,44 +71,7 @@ const Channel = ({
   );
 };
 
-const inputClass =
-  "w-full rounded-lg border border-mocha-surface1 bg-mocha-crust/60 px-3 py-2 text-[15px] text-mocha-text placeholder:text-mocha-overlay0 transition focus:border-mocha-mauve focus:outline-none focus:ring-2 focus:ring-mocha-mauve/30 aria-invalid:border-mocha-red";
-
 export default function Contact(_props: AppComponentProps) {
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [errors, setErrors] = useState<Partial<Record<keyof typeof form, string>>>({});
-  const [sent, setSent] = useState(false);
-
-  const validate = () => {
-    const next: typeof errors = {};
-    if (!form.name.trim()) next.name = "Add your name so I know who's writing.";
-    if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) next.email = "That email address doesn't look right.";
-    if (form.message.trim().length < 10) next.message = "Write at least a sentence.";
-    setErrors(next);
-    return Object.keys(next).length === 0;
-  };
-
-  const submit = (e: FormEvent) => {
-    e.preventDefault();
-    if (!validate()) return;
-    // No backend: hand the draft to the visitor's own mail client.
-    const subject = `Hello from ${form.name.trim()}`;
-    const body = `${form.message.trim()}\n\n${form.name.trim()}${form.email ? `\n${form.email.trim()}` : ""}`;
-    window.location.href = `mailto:${profile.contact.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    setSent(true);
-  };
-
-  const field = (key: keyof typeof form) => ({
-    id: `contact-${key}`,
-    value: form[key],
-    "aria-invalid": errors[key] ? true : undefined,
-    "aria-describedby": errors[key] ? `contact-${key}-error` : undefined,
-    onChange: (e: { target: { value: string } }) => {
-      setForm((f) => ({ ...f, [key]: e.target.value }));
-      if (errors[key]) setErrors((er) => ({ ...er, [key]: undefined }));
-    },
-  });
-
   return (
     <div className="@container h-full overflow-y-auto scrollbar-thin scrollbar-thumb-mocha-surface2 scrollbar-track-mocha-surface0">
       <div className="mx-auto grid max-w-4xl gap-8 px-5 py-6 @3xl:grid-cols-[1fr_1.1fr] @3xl:px-8">
@@ -132,52 +95,9 @@ export default function Contact(_props: AppComponentProps) {
           <h2 id="contact-form-title" className="font-semibold text-mocha-text">
             Write a message
           </h2>
-          <p className="mt-1 text-sm text-mocha-subtext0">Sends through your own email app.</p>
+          <p className="mt-1 text-sm text-mocha-subtext0">I get it instantly and reply by email.</p>
 
-          <form onSubmit={submit} noValidate className="mt-4 flex flex-col gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="contact-name" className="text-sm font-medium text-mocha-subtext1">
-                Name
-              </label>
-              <input {...field("name")} autoComplete="name" className={inputClass} placeholder="Sara Mehta" />
-              {errors.name && (
-                <p id="contact-name-error" className="text-sm text-mocha-red">
-                  {errors.name}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="contact-email" className="text-sm font-medium text-mocha-subtext1">
-                Your email <span className="font-normal text-mocha-overlay1">(optional)</span>
-              </label>
-              <input {...field("email")} type="email" autoComplete="email" className={inputClass} placeholder="sara@company.com" />
-              {errors.email && (
-                <p id="contact-email-error" className="text-sm text-mocha-red">
-                  {errors.email}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="contact-message" className="text-sm font-medium text-mocha-subtext1">
-                Message
-              </label>
-              <textarea {...field("message")} rows={5} className={`${inputClass} resize-none`} placeholder="We're hiring for a full stack role and..." />
-              {errors.message && (
-                <p id="contact-message-error" className="text-sm text-mocha-red">
-                  {errors.message}
-                </p>
-              )}
-            </div>
-            <div className="flex items-center justify-between gap-3">
-              <p aria-live="polite" className="text-sm text-mocha-green">
-                {sent ? "Draft opened in your email app." : ""}
-              </p>
-              <button type="submit" className={buttonClass.primary}>
-                <PiPaperPlaneTiltBold className="size-4" aria-hidden />
-                Send
-              </button>
-            </div>
-          </form>
+          <ContactForm className="mt-4" source="Desktop Contact app" />
         </section>
       </div>
     </div>

@@ -13,7 +13,7 @@ import { profile } from "@src/data/profile";
 import useWindowStore from "@src/store/zustore/useWindowStore";
 import { useNow } from "@src/hooks/useNow";
 
-const homeApps: AppId[] = ["about", "projects", "resume", "contact", "terminal", "browser", "code", "spotify", "editor", "welcome"];
+const homeApps: AppId[] = ["about", "projects", "resume", "contact", "mail", "calendar", "terminal", "browser", "code", "spotify", "editor", "welcome"];
 const dock: AppId[] = ["about", "projects", "terminal", "contact"];
 
 const StatusBar = () => {

@@ -43,4 +43,6 @@ export const appComponents: Record<AppId, ComponentType<AppComponentProps>> = {
   code: Code,
   spotify: Spotify,
   editor: lazy(() => import("./editor/TextEditor")),
+  mail: lazy(() => import("./mail/Mail")),
+  calendar: lazy(() => import("./calendar/Calendar")),
 };

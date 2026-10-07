@@ -22,7 +22,7 @@ export const Monogram = ({ size = 72 }: { size?: number }) => (
   <span
     aria-hidden
     className="grid shrink-0 place-items-center rounded-[30%] bg-linear-to-br from-mocha-mauve via-mocha-lavender to-mocha-sapphire font-bold tracking-tight text-mocha-crust shadow-[inset_0_1px_0_rgb(255_255_255/0.4),0_10px_30px_-10px_rgb(203_166_247/0.5)]"
-    style={{ width: size, height: size, fontSize: size * 0.36 }}
+    style={{ width: `${size / 16}rem`, height: `${size / 16}rem`, fontSize: `${(size * 0.36) / 16}rem` }}
   >
     TC
   </span>

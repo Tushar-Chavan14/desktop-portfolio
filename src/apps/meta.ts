@@ -2,9 +2,12 @@ import type { StaticImageData } from "next/image";
 import type { IconType } from "react-icons";
 import {
   PiAddressBookFill,
+  PiCalendarDotsFill,
+  PiEnvelopeSimpleFill,
   PiFilePdfFill,
   PiFolderOpenFill,
   PiHandWavingFill,
+  PiLinkedinLogoFill,
   PiUserFocusFill,
 } from "react-icons/pi";
 import chromeIcon from "@src/assets/icons/chrome.svg";
@@ -25,7 +28,9 @@ export type AppId =
   | "browser"
   | "code"
   | "spotify"
-  | "editor";
+  | "editor"
+  | "mail"
+  | "calendar";
 
 export type AppIconSpec =
   | { kind: "image"; src: StaticImageData }
@@ -182,6 +187,38 @@ export const apps: Record<AppId, AppMeta> = {
     minHeight: 260,
     keywords: ["notes", "text", "write"],
   },
+  mail: {
+    id: "mail",
+    title: "Mail",
+    description: "Write to me, it reaches my phone instantly",
+    icon: {
+      kind: "glyph",
+      Icon: PiEnvelopeSimpleFill,
+      tile: "from-mocha-yellow to-mocha-peach",
+      glyph: "text-mocha-crust",
+    },
+    width: 940,
+    height: 620,
+    minWidth: 380,
+    minHeight: 420,
+    keywords: ["email", "message", "inbox", "compose", "hire"],
+  },
+  calendar: {
+    id: "calendar",
+    title: "Calendar",
+    description: "My availability and a slot for a call",
+    icon: {
+      kind: "glyph",
+      Icon: PiCalendarDotsFill,
+      tile: "from-mocha-sky to-mocha-sapphire",
+      glyph: "text-mocha-crust",
+    },
+    width: 900,
+    height: 700,
+    minWidth: 380,
+    minHeight: 420,
+    keywords: ["availability", "schedule", "call", "meeting", "interview", "notice period"],
+  },
 };
 
 /** Dock order. `null` renders a separator. */
@@ -190,6 +227,8 @@ export const dockApps: (AppId | null)[] = [
   "projects",
   "resume",
   "contact",
+  "mail",
+  "calendar",
   null,
   "terminal",
   "browser",
@@ -199,7 +238,8 @@ export const dockApps: (AppId | null)[] = [
 ];
 
 /** Icons placed on the desktop on first visit. */
-export const desktopApps: AppId[] = ["welcome", "about", "projects", "resume", "contact", "terminal"];
+// New icons go at the end so they land in free cells for returning visitors.
+export const desktopApps: AppId[] = ["welcome", "about", "projects", "resume", "contact", "mail", "calendar"];
 
 /** External links that behave like apps (dock + launcher) but open a real tab. */
 export const externalLinks = [
@@ -209,5 +249,17 @@ export const externalLinks = [
     description: "My repositories",
     url: profile.contact.github,
     icon: { kind: "image", src: githubIcon } as AppIconSpec,
+  },
+  {
+    id: "linkedin",
+    title: "LinkedIn",
+    description: "My professional profile",
+    url: profile.contact.linkedin,
+    icon: {
+      kind: "glyph",
+      Icon: PiLinkedinLogoFill,
+      tile: "from-mocha-sapphire to-mocha-blue",
+      glyph: "text-mocha-crust",
+    } as AppIconSpec,
   },
 ];

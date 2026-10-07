@@ -75,6 +75,8 @@ export const APP_IDS: AppId[] = [
   "code",
   "spotify",
   "editor",
+  "mail",
+  "calendar",
 ];
 
 const ALIASES: Record<string, string[]> = { ll: ["ls", "-l"], la: ["ls", "-a"], "..": ["cd", ".."] };

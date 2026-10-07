@@ -47,8 +47,10 @@ const DesktopIcon = ({ id, cell, grid, selected, onSelect }: IconProps) => {
   const openApp = useWindowStore((s) => s.openApp);
   const dragged = useRef(false);
 
-  // Clamp to the visible grid so icons never disappear after a resize.
-  const visible = { col: Math.min(cell.col, grid.cols - 1), row: Math.min(cell.row, grid.rows - 1) };
+  // Icons below the last visible row wrap into the next column, then clamp
+  // horizontally, so short screens and resizes never hide or stack them.
+  const wrapped = { col: cell.col + Math.floor(cell.row / grid.rows), row: cell.row % grid.rows };
+  const visible = { col: Math.min(wrapped.col, grid.cols - 1), row: wrapped.row };
 
   useEffect(() => {
     controls.start(cellToPoint(visible), reduce ? { duration: 0 } : { type: "spring", stiffness: 500, damping: 38 });

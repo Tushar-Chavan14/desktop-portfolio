@@ -22,6 +22,17 @@ export const profile = {
     githubUser: "Tushar-Chavan14",
     blog: "https://medium.com/@tushar_chavan",
   },
+  /** Drives the Calendar app. India has no DST, so the offset is fixed. */
+  availability: {
+    status: "Open to full-time roles and freelance work",
+    noticePeriod: "30 days",
+    workModes: ["Remote", "Hybrid", "Open to relocation"],
+    timeZone: "Asia/Kolkata",
+    timeZoneLabel: "IST (UTC+5:30)",
+    utcOffsetMinutes: 330,
+    /** Hours (IST, 24h) when calls can be booked. The last slot starts an hour before `end`. */
+    callHours: { start: 10, end: 19 },
+  },
   resumeUrl: "/resume/tushar-chavan-resume.pdf",
   sourceRepo: "https://github.com/Tushar-Chavan14/desktop-portfolio",
 } as const;
@@ -88,6 +99,8 @@ export interface Experience {
   start: string;
   end: string;
   highlights: string[];
+  /** Short tags for skimmable views. */
+  keywords: string[];
 }
 
 export const experience: Experience[] = [
@@ -107,6 +120,7 @@ export const experience: Experience[] = [
       "Built Vue.js frontends with Pinia and contributed to an e-learning platform on Strapi CMS.",
       "Reviewed code and mentored teammates on standards and best practices.",
     ],
+    keywords: ["Microservices", "Kafka", "Next.js + Strapi", "GraphQL", "AWS", "CI/CD", "Mentoring"],
   },
   {
     id: "shivila",
@@ -120,6 +134,7 @@ export const experience: Experience[] = [
       "Implemented Redux for global state and React Router for navigation.",
       "Reviewed code and onboarded teammates on Linux CLI fundamentals.",
     ],
+    keywords: ["React", "Material-UI", "Redux", "3 client projects"],
   },
 ];
 
@@ -132,6 +147,10 @@ export interface Project {
   stack: string[];
   highlights: string[];
   url?: string;
+  /** Screenshot of the live site in /public. */
+  image?: string;
+  /** Caveat shown next to the link, e.g. region restrictions. */
+  note?: string;
   /** Short category used as the Files app grouping. */
   kind: "Commerce" | "Platform" | "AI" | "Dashboard";
 }
@@ -144,6 +163,7 @@ export const projects: Project[] = [
     tagline: "E-commerce and social commerce platform",
     kind: "Commerce",
     url: "https://winasa.com/",
+    image: "/projects/winasa.webp",
     stack: ["Next.js", "Express.js", "TypeORM", "PostgreSQL", "AWS S3", "Firebase", "Socket.IO"],
     highlights: [
       "Engineered a 7-service microservices platform: auth, products, payments, delivery, notifications, CMS and frontend.",
@@ -171,6 +191,8 @@ export const projects: Project[] = [
     name: "Emirates Driving Company",
     tagline: "Multilingual corporate website",
     kind: "Platform",
+    url: "https://www.edcad.ae/",
+    note: "UAE only",
     stack: ["Next.js", "TypeScript", "Strapi CMS", "MySQL", "Framer Motion"],
     highlights: [
       "Built 25+ server-rendered pages with the Next.js App Router, server components and server actions.",
@@ -184,6 +206,8 @@ export const projects: Project[] = [
     name: "Al-Noor Admin Dashboard",
     tagline: "Education management SPA",
     kind: "Dashboard",
+    url: "https://aptitude-alnoorpod.com/",
+    image: "/projects/alnoor.webp",
     stack: ["React", "TypeScript", "Redux Toolkit + Saga", "HeroUI", "Tailwind CSS", "react-intl"],
     highlights: [
       "Built an education SPA managing IEP workflows, TDA/SCIP processes, attendance, student records and goal tracking.",
@@ -221,6 +245,7 @@ export const projects: Project[] = [
     tagline: "Professional networking platform",
     kind: "Platform",
     url: "https://www.ypclub.com/",
+    image: "/projects/ypclub.webp",
     stack: ["Express.js", "Kafka", "MySQL", "Microservices"],
     highlights: [
       "Built auth, mutual connections, event management and invoice generation for a UAE networking platform.",
