@@ -16,7 +16,7 @@ import { profile } from "@src/data/profile";
 import { LIMITS, sendContact, validateContact, type ContactErrors, type ContactField } from "@src/lib/contact";
 import useWindowStore from "@src/store/zustore/useWindowStore";
 import type { AppComponentProps } from "../types";
-import { Monogram, buttonClass } from "../ui";
+import { Avatar, buttonClass } from "../ui";
 
 /** Pre-filled draft passed in by other apps (Calendar's "Request this time"). */
 export interface ComposeDraft {
@@ -149,7 +149,7 @@ const Welcome = ({ onReply, onBook }: { onReply: () => void; onBook: () => void 
       time="Today"
       from={
         <span className="flex min-w-0 items-center gap-3">
-          <Monogram size={40} />
+          <Avatar size={40} />
           <span className="min-w-0">
             <span className="block truncate text-sm font-semibold text-mocha-text">{profile.name}</span>
             <span className="block truncate text-xs text-mocha-subtext0">{profile.contact.email}</span>
@@ -299,7 +299,7 @@ const Compose = ({
       <h2 className="sr-only">New message</h2>
       <Row label="To">
         <span className="my-1.5 inline-flex min-w-0 items-center gap-2 rounded-full bg-mocha-surface0 py-1 pr-3 pl-1">
-          <Monogram size={22} />
+          <Avatar size={22} />
           <span className="truncate text-sm text-mocha-text">{profile.name}</span>
         </span>
       </Row>

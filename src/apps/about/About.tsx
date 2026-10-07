@@ -15,7 +15,7 @@ import {
 import { education, experience, profile, projects, skills } from "@src/data/profile";
 import useWindowStore from "@src/store/zustore/useWindowStore";
 import type { AppComponentProps } from "../types";
-import { Monogram, SectionTitle, buttonClass } from "../ui";
+import { Avatar, SectionTitle, buttonClass } from "../ui";
 
 const reveal = (reduce: boolean | null, i: number) =>
   reduce
@@ -41,7 +41,7 @@ export default function About(_props: AppComponentProps) {
       <div className="mx-auto max-w-5xl px-5 py-6 @2xl:px-8 @2xl:py-8">
         {/* Intro */}
         <motion.header {...reveal(reduce, 0)} className="flex flex-col gap-5 @xl:flex-row @xl:items-center">
-          <Monogram size={84} />
+          <Avatar size={84} />
           <div className="min-w-0 flex-1">
             <h1 className="text-3xl font-semibold tracking-tight text-mocha-text @2xl:text-4xl">{profile.name}</h1>
             <p className="mt-1 text-base text-mocha-subtext1">

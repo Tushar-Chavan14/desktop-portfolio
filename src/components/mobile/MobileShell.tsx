@@ -8,7 +8,7 @@ import { PiFileTextBold, PiArrowSquareOutBold, PiCaretLeftBold, PiWifiHighBold, 
 import { apps, externalLinks, type AppId } from "@src/apps/meta";
 import { appComponents } from "@src/apps/registry";
 import { AppIcon } from "@src/components/appIcon/AppIcon";
-import { Monogram } from "@src/apps/ui";
+import { Avatar } from "@src/apps/ui";
 import { profile } from "@src/data/profile";
 import useWindowStore from "@src/store/zustore/useWindowStore";
 import { useNow } from "@src/hooks/useNow";
@@ -67,7 +67,7 @@ const MobileShell = () => {
       <main className="flex min-h-0 flex-1 flex-col overflow-y-auto px-5 pb-4">
         <section className="mt-4 rounded-3xl border border-white/10 bg-mocha-crust/60 p-5 backdrop-blur-xl" aria-label="Profile">
           <div className="flex items-center gap-4">
-            <Monogram size={56} />
+            <Avatar size={56} />
             <div className="min-w-0">
               <h1 className="text-xl font-semibold tracking-tight text-mocha-text">{profile.name}</h1>
               <p className="text-sm text-mocha-subtext1">{profile.role}</p>

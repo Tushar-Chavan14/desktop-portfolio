@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import Image from "next/image";
+import portrait from "@src/assets/images/tushar.webp";
 
 /** Shared class strings so every app's controls share one shape and state language. */
 export const buttonClass = {
@@ -17,8 +19,8 @@ export const SectionTitle = ({ children, id }: { children: ReactNode; id?: strin
   </h2>
 );
 
-/** Monogram used wherever a portrait would go. */
-export const Monogram = ({ size = 72 }: { size?: number }) => (
+/** Initials tile for tiny spots where a photo turns into a smudge (the overview header). */
+export const Monogram = ({ size = 24 }: { size?: number }) => (
   <span
     aria-hidden
     className="grid shrink-0 place-items-center rounded-[30%] bg-linear-to-br from-mocha-mauve via-mocha-lavender to-mocha-sapphire font-bold tracking-tight text-mocha-crust shadow-[inset_0_1px_0_rgb(255_255_255/0.4),0_10px_30px_-10px_rgb(203_166_247/0.5)]"
@@ -26,6 +28,19 @@ export const Monogram = ({ size = 72 }: { size?: number }) => (
   >
     TC
   </span>
+);
+
+/** Portrait used wherever Tushar appears: About, door screen, launcher, Mail. Decorative, the name is always next to it. */
+export const Avatar = ({ size = 72 }: { size?: number }) => (
+  <Image
+    src={portrait}
+    alt=""
+    width={size}
+    height={size}
+    placeholder="blur"
+    className="shrink-0 rounded-[30%] object-cover ring-1 ring-white/10 shadow-[0_10px_30px_-12px_rgb(17_17_27/0.9)]"
+    style={{ width: `${size / 16}rem`, height: `${size / 16}rem` }}
+  />
 );
 
 /** Small tag for tech stacks; deliberately flat so long stacks stay calm. */

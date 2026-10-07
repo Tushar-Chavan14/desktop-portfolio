@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from "motion/react";
 import { PiArrowRightBold, PiDownloadSimpleBold, PiFileTextBold, PiMonitorBold } from "react-icons/pi";
 import type { IconType } from "react-icons";
 import { profile } from "@src/data/profile";
-import { Monogram } from "@src/apps/ui";
+import { Avatar } from "@src/apps/ui";
 import { Z } from "@src/constants/layout";
 import { useIsMobile } from "@src/hooks/useIsMobile";
 
@@ -96,7 +96,7 @@ const Door = ({ onQuickView, onDesktop }: DoorProps) => {
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="flex items-center gap-4"
         >
-          <Monogram size={60} />
+          <Avatar size={60} />
           <div>
             <h1 id="door-title" className="text-3xl font-semibold tracking-tight text-mocha-text sm:text-4xl">
               {profile.name}

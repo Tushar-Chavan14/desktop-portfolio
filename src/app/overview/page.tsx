@@ -26,7 +26,7 @@ import {
   PiUserBold,
 } from "react-icons/pi";
 import { education, experience, profile, projects, type Project } from "@src/data/profile";
-import { Monogram } from "@src/apps/ui";
+import { Avatar, Monogram } from "@src/apps/ui";
 import { CopyButton, DesktopLink } from "@src/components/overview/client";
 import ContactForm from "@src/components/contact/ContactForm";
 import Workspaces, { type Workspace } from "@src/components/workspaces/Workspaces";
@@ -76,7 +76,7 @@ const Me = () => (
     <Win title="About Me">
       <div className="flex flex-1 flex-col justify-between gap-8 md:px-4">
         <div className="flex flex-col gap-5">
-          <Monogram size={84} />
+          <Avatar size={84} />
           <div>
             <h1 className="text-4xl font-semibold tracking-tight text-mocha-text md:text-6xl">{profile.name}</h1>
             <p className="mt-2 text-xl text-mocha-mauve">{profile.role}</p>
