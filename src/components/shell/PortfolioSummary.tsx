@@ -24,7 +24,8 @@ export default function PortfolioSummary() {
       <ul>
         {projects.map((p) => (
           <li key={p.id}>
-            {p.url ? <a href={p.url}>{p.name}</a> : p.name}: {p.tagline}. Built with {p.stack.join(", ")}.
+            {p.url ? <a href={p.url}>{p.name}</a> : p.name}
+            {p.engagement && ` (${p.engagement.toLowerCase()})`}: {p.tagline}. Built with {p.stack.join(", ")}.
           </li>
         ))}
       </ul>

@@ -16,7 +16,7 @@ import type { IconType } from "react-icons";
 import { experience, projects, type Project } from "@src/data/profile";
 import useWindowStore from "@src/store/zustore/useWindowStore";
 import type { AppComponentProps } from "../types";
-import { Tag, buttonClass } from "../ui";
+import { FreelanceTag, Tag, buttonClass } from "../ui";
 
 type Kind = Project["kind"];
 type View = { type: "all" } | { type: "kind"; kind: Kind } | { type: "experience" } | { type: "project"; id: string; from: View };
@@ -67,7 +67,10 @@ const ProjectDetail = ({ project, onBack }: { project: Project; onBack: () => vo
       </button>
       <header className="mt-4 flex flex-col gap-4 @xl:flex-row @xl:items-end @xl:justify-between">
         <div>
-          <p className="text-sm font-medium text-mocha-mauve">{project.kind}</p>
+          <p className="flex items-center gap-2 text-sm font-medium text-mocha-mauve">
+            {project.kind}
+            {project.engagement === "Freelance" && <FreelanceTag />}
+          </p>
           <h1 className="mt-1 text-2xl font-semibold tracking-tight text-mocha-text @2xl:text-3xl">{project.name}</h1>
           <p className="mt-1 text-mocha-subtext1">{project.tagline}</p>
         </div>
@@ -157,6 +160,7 @@ const Folder = ({ project, onOpen, index }: { project: Project; onOpen: () => vo
         <PiFolderSimpleFill className="size-16 text-mocha-blue drop-shadow-[0_6px_10px_rgb(17_17_27/0.4)] transition-transform group-hover:-translate-y-0.5" aria-hidden />
         <span className="text-sm font-medium text-mocha-text">{project.name}</span>
         <span className="line-clamp-2 text-xs text-mocha-subtext0">{project.tagline}</span>
+        {project.engagement === "Freelance" && <FreelanceTag />}
       </button>
     </motion.li>
   );

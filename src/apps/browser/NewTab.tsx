@@ -10,6 +10,7 @@ import {
   PiMediumLogo,
 } from "react-icons/pi";
 import { profile, projects } from "@src/data/profile";
+import { FreelanceTag } from "../ui";
 import { Favicon } from "./parts";
 import { hostOf } from "./url";
 
@@ -100,6 +101,7 @@ export default function NewTab({
                       <span className="shrink-0 rounded-md bg-mocha-surface0 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-mocha-subtext0">
                         {p.kind}
                       </span>
+                      {p.engagement === "Freelance" && <FreelanceTag />}
                     </span>
                     <span className="mt-0.5 text-sm text-mocha-subtext0 text-pretty">{p.tagline}</span>
                     <span className="mt-3 flex items-center gap-1 font-mono text-xs text-mocha-overlay1 group-hover:text-mocha-mauve">

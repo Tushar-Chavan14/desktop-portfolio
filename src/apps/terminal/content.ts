@@ -60,7 +60,9 @@ export function educationDoc(): string {
 export function projectDoc(slug: string): string {
   const p = projects.find((x) => x.slug === slug);
   if (!p) return "";
-  const out = [`# ${p.name}`, p.tagline, "", `Type: ${p.kind}`, `Stack: ${p.stack.join(", ")}`];
+  const out = [`# ${p.name}`, p.tagline, "", `Type: ${p.kind}`];
+  if (p.engagement) out.push(`Engagement: ${p.engagement}`);
+  out.push(`Stack: ${p.stack.join(", ")}`);
   if (p.url) out.push(`Live: ${p.url}`);
   out.push("", "## Highlights", ...p.highlights.map((h) => `- ${h}`));
   return out.join("\n");

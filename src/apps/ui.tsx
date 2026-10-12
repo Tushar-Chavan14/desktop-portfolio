@@ -49,3 +49,12 @@ export const Tag = ({ children }: { children: ReactNode }) => (
     {children}
   </span>
 );
+
+/** Marks client work taken on directly rather than through an employer. */
+export const FreelanceTag = ({ className = "" }: { className?: string }) => (
+  <span
+    className={`inline-flex shrink-0 items-center rounded-md bg-mocha-green/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-mocha-green ${className}`}
+  >
+    Freelance
+  </span>
+);

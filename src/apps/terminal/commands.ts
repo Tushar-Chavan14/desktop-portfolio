@@ -535,6 +535,7 @@ export const commands: Record<string, CommandSpec> = {
         ctx.print([
           { text: p.name, cls: C.h2 },
           { text: `  ${p.tagline}`, cls: C.sub },
+          ...(p.engagement ? [{ text: `  [${p.engagement}]`, cls: C.ok }] : []),
         ]);
         ctx.print([{ text: "  Stack: ", cls: C.key }, { text: p.stack.join(", "), cls: C.text }]);
         if (p.url) ctx.print([{ text: "  Live: ", cls: C.key }, ...linkify(p.url, C.text)]);

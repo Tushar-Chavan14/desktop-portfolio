@@ -24,6 +24,7 @@ import {
   PiPhoneBold,
   PiSquaresFourBold,
   PiUserBold,
+  PiPawPrintBold,
 } from "react-icons/pi";
 import { education, experience, profile, projects, type Project } from "@src/data/profile";
 import { Avatar, Monogram } from "@src/apps/ui";
@@ -324,8 +325,13 @@ const skillGroups: { title: string; items: SkillItem[] }[] = [
       { name: "TypeScript", logo: "typescript" },
       { name: "JavaScript", logo: "javascript" },
       { name: "Vue.js", logo: "vuedotjs" },
+      { name: "Nuxt", logo: "nuxt" },
       { name: "Tailwind", logo: "tailwindcss" },
       { name: "Redux", logo: "redux" },
+      { name: "Zustand", Icon: PiPawPrintBold },
+      // { name: "Pinia", logo: "pinia" },
+      // { name: "Framer Motion", logo: "framer" },
+      { name: "HeroUI", logo: "heroui" },
     ],
   },
   {
@@ -337,17 +343,20 @@ const skillGroups: { title: string; items: SkillItem[] }[] = [
       { name: "GraphQL", logo: "graphql" },
       { name: "Socket.IO", logo: "socketdotio" },
       { name: "Kafka", logo: "apachekafka" },
-      { name: "Python", logo: "python" },
-      { name: "Go", logo: "go" },
+      { name: "Stripe", logo: "stripe" },
+      // { name: "Python", logo: "python" },
+      // { name: "Go", logo: "go" },
     ],
   },
   {
     title: "Databases & CMS",
     items: [
       { name: "PostgreSQL", logo: "postgresql" },
+      { name: "Supabase", logo: "supabase" },
       { name: "MySQL", logo: "mysql" },
       { name: "MongoDB", logo: "mongodb" },
       { name: "Strapi", logo: "strapi" },
+      { name: "Sanity", logo: "sanity" },
       { name: "TypeORM", Icon: PiDatabaseBold },
       { name: "Mongoose", Icon: PiLeafBold },
     ],
@@ -360,6 +369,7 @@ const skillGroups: { title: string; items: SkillItem[] }[] = [
       { name: "Nginx", logo: "nginx" },
       { name: "Cloudflare", logo: "cloudflare" },
       { name: "Firebase", logo: "firebase" },
+      { name: "Sentry", logo: "sentry" },
       { name: "PM2", Icon: PiGearSixBold },
       { name: "CI/CD", Icon: PiArrowsClockwiseBold },
       { name: "OpenAI", Icon: PiOpenAiLogoBold },

@@ -10,7 +10,7 @@ export const profile = {
   location: "Panchkula, Haryana, India",
   yearsOfExperience: "3+",
   summary:
-    "Full stack web developer with 3+ years of experience designing and delivering microservices architectures and production web applications for GCC-region clients. I own projects end to end: system design, REST and GraphQL APIs, AWS infrastructure, CI/CD pipelines and frontend UX.",
+    "Full stack web developer with 3+ years of experience designing and delivering microservices architectures and production web applications for GCC-region clients, and I take on freelance builds that I deliver solo. I own projects end to end: system design, REST and GraphQL APIs, AWS infrastructure, CI/CD pipelines and frontend UX.",
   shortBio:
     "I build microservices backends and Next.js frontends for clients across the GCC.",
   contact: {
@@ -47,12 +47,12 @@ export const skills: SkillGroup[] = [
   {
     id: "languages",
     label: "Languages",
-    items: ["JavaScript (ES2022+)", "TypeScript", "Python", "Go", "SQL", "HTML / CSS"],
+    items: ["JavaScript (ES2022+)", "TypeScript", "SQL", "HTML / CSS"],
   },
   {
     id: "frontend",
     label: "Frontend",
-    items: ["Next.js", "React", "Vue.js", "Tailwind CSS", "Framer Motion", "HeroUI"],
+    items: ["Next.js", "React", "Vue.js", "Nuxt", "Tailwind CSS", "Framer Motion", "HeroUI"],
   },
   {
     id: "state",
@@ -67,7 +67,7 @@ export const skills: SkillGroup[] = [
   {
     id: "data",
     label: "Databases & ORM",
-    items: ["PostgreSQL", "MySQL", "MongoDB", "TypeORM", "Mongoose", "Strapi CMS"],
+    items: ["PostgreSQL", "MySQL", "MongoDB", "Supabase", "TypeORM", "Mongoose", "Strapi CMS", "Sanity CMS"],
   },
   {
     id: "devops",
@@ -81,13 +81,13 @@ export const skills: SkillGroup[] = [
       "PM2",
       "Certbot",
       "Bitbucket CI/CD",
-      "Cloudflare",
+      "Cloudflare Workers",
     ],
   },
   {
     id: "integrations",
     label: "Integrations",
-    items: ["OpenAI GPT-4", "Firebase (FCM, Admin)", "Puppeteer", "Nodemailer"],
+    items: ["OpenAI GPT-4", "Stripe Payments", "Firebase (FCM, Admin)", "WooCommerce", "Zoom API", "Mux", "Sentry", "Puppeteer", "Nodemailer"],
   },
 ];
 
@@ -153,9 +153,45 @@ export interface Project {
   note?: string;
   /** Short category used as the Files app grouping. */
   kind: "Commerce" | "Platform" | "AI" | "Dashboard";
+  /** Set for work taken on directly with a client rather than through an employer. */
+  engagement?: "Freelance";
 }
 
 export const projects: Project[] = [
+  {
+    id: "cdlc",
+    slug: "cdlc-club",
+    name: "CDLC.CLUB",
+    tagline: "Student and mentor learning platform",
+    kind: "Platform",
+    engagement: "Freelance",
+    url: "https://cdlc.club/",
+    image: "/projects/cdlc-club.webp",
+    stack: ["Nuxt 4", "Vue 3", "TypeScript", "Supabase", "PostgreSQL", "Sanity CMS", "Mux", "Zoom API", "Cloudflare Workers"],
+    highlights: [
+      "Built solo, end to end: an invite-only education SaaS connecting school students with industry mentors through courses, live masterclasses and topic groups.",
+      "Designed a five-role access model (student, mentor, tutor, school admin, super admin) enforced in route middleware, Supabase row-level security and SQL RPCs.",
+      "Integrated Zoom webhooks for masterclass attendance and automatic recordings, Mux for lesson video and Sanity CMS for mentor profiles.",
+      "Shipped mentor-reviewed course submissions with XP, bulk CSV invites and OpenAPI docs; deployed on Cloudflare Workers with Sentry.",
+    ],
+  },
+  {
+    id: "pets-distribution",
+    slug: "pets-distribution",
+    name: "Pets Distribution",
+    tagline: "B2B wholesale ordering portal",
+    kind: "Commerce",
+    engagement: "Freelance",
+    url: "https://petsdistribution.bg/",
+    image: "/projects/pets-distribution.webp",
+    stack: ["Nuxt 4", "Vue 3", "TypeScript", "Supabase", "PostgreSQL", "GraphQL", "WooCommerce", "Cloudflare Workers"],
+    highlights: [
+      "Built solo: a bilingual (Bulgarian and English) wholesale portal for a Bulgarian pet-supply distributor serving pet shops, vet clinics and breeders.",
+      "Pulled the live WooCommerce catalogue over GraphQL with wholesale pricing, brand filters and stock, behind a cross-device cart that reconciles on login.",
+      "Built the quote-to-order flow: admins approve business sign-ups and price each order, then database triggers push it to WooCommerce and email the invoice through Brevo.",
+      "Added SEO, CMS-driven content pages and an admin dashboard with order stats; deployed on Cloudflare Workers.",
+    ],
+  },
   {
     id: "winasa",
     slug: "winasa",

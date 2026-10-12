@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Modal } from "@heroui/react";
 import { PiArrowSquareOutBold, PiArrowsOutSimpleBold, PiXBold } from "react-icons/pi";
 import type { Project } from "@src/data/profile";
+import { FreelanceTag } from "@src/apps/ui";
 
 const hostOf = (url: string) => new URL(url).hostname.replace(/^www\./, "");
 
@@ -20,6 +21,12 @@ const coverTint: Record<Project["kind"], string> = {
   AI: "from-mocha-peach/35 to-mocha-yellow/10 text-mocha-peach",
   Dashboard: "from-mocha-teal/35 to-mocha-green/10 text-mocha-teal",
 };
+
+/**
+ * Bento rhythm: on four columns the 1st and 6th cards span two, so ten cards fill
+ * three rows exactly; on two columns the same cards run full width between pairs.
+ */
+const WIDE = new Set([0, 5]);
 
 const statusOf = (project: Project) => (project.url ? (project.note ?? hostOf(project.url)) : "Private client build");
 
@@ -38,12 +45,12 @@ const Visual = ({ project, sizes }: { project: Project; sizes: string }) =>
     </div>
   );
 
-const ProjectCard = ({ project, onOpen }: { project: Project; onOpen: () => void }) => (
+const ProjectCard = ({ project, wide, onOpen }: { project: Project; wide: boolean; onOpen: () => void }) => (
   <button
     type="button"
     onClick={onOpen}
     aria-haspopup="dialog"
-    className="group flex h-full min-h-0 w-full min-w-0 flex-col overflow-hidden rounded-2xl border border-white/10 bg-mocha-base/90 text-left shadow-[0_20px_50px_-20px_rgb(17_17_27/0.9)] transition-[transform,border-color] duration-300 hover:-translate-y-1 hover:border-mocha-mauve/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mocha-mauve"
+    className="group flex h-full min-h-0 w-full min-w-0 flex-col overflow-hidden rounded-2xl border border-white/10 bg-mocha-base/90 text-left shadow-[0_20px_50px_-20px_rgb(17_17_27/0.9)] transition-[border-color,box-shadow] duration-300 ease-out hover:border-mocha-mauve/40 hover:shadow-[0_20px_50px_-20px_rgb(17_17_27/0.9),0_0_28px_-8px_rgb(203_166_247/0.3)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mocha-mauve"
   >
     <span className="flex h-8 w-full shrink-0 items-center gap-2 border-b border-white/5 px-3">
       <span aria-hidden className="flex gap-1">
@@ -52,28 +59,47 @@ const ProjectCard = ({ project, onOpen }: { project: Project; onOpen: () => void
         <span className="size-2 rounded-full bg-mocha-green/80" />
       </span>
       <span className="truncate text-[11px] text-mocha-overlay2">{statusOf(project)}</span>
+      {project.engagement === "Freelance" && <FreelanceTag className="ml-auto" />}
     </span>
-    <span className="relative block aspect-[16/9] w-full shrink-0 overflow-hidden border-b border-white/5 lg:aspect-auto lg:min-h-0 lg:flex-1">
-      <span className="absolute inset-0 transition-transform duration-500 group-hover:scale-[1.03]">
-        <Visual project={project} sizes="(min-width: 1024px) 18rem, (min-width: 640px) 44vw, 88vw" />
-      </span>
-    </span>
-    <span className="flex w-full min-w-0 shrink-0 flex-col gap-2 p-3.5">
-      <span className="block min-w-0">
-        <span className="flex items-center justify-between gap-2">
-          <span className="truncate font-semibold text-mocha-text">{project.name}</span>
-          <PiArrowsOutSimpleBold
-            className="size-4 shrink-0 text-mocha-overlay2 transition-colors group-hover:text-mocha-mauve"
-            aria-hidden
+    {/* Wide bento cards sit side by side on large screens so the screenshot keeps a natural ratio. */}
+    <span className={`flex min-h-0 w-full flex-1 flex-col ${wide ? "lg:flex-row" : ""}`}>
+      <span
+        className={`relative block aspect-[16/9] w-full shrink-0 overflow-hidden border-b border-white/5 lg:aspect-auto lg:min-h-0 lg:flex-1 ${
+          wide ? "lg:w-1/2 lg:flex-none lg:border-r lg:border-b-0" : ""
+        }`}
+      >
+        {/* Screenshots ease in from the top edge; plain covers stay still so their initials don't balloon. */}
+        <span
+          className={`absolute inset-0 origin-top transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
+            project.image ? "group-hover:scale-[1.04] motion-reduce:group-hover:scale-100" : ""
+          }`}
+        >
+          <Visual
+            project={project}
+            sizes={wide ? "(min-width: 1024px) 18rem, 88vw" : "(min-width: 1024px) 18rem, (min-width: 640px) 44vw, 88vw"}
           />
         </span>
-        <span className="block truncate text-sm text-mocha-subtext0">{project.tagline}</span>
       </span>
-      {/* One line of tags; any that would wrap are hidden whole, keeping every card the same height. */}
-      <span className="flex h-[1.375rem] flex-wrap gap-1 overflow-hidden">
-        {project.stack.slice(0, 3).map((s) => (
-          <Tag key={s}>{s}</Tag>
-        ))}
+      <span className={`flex w-full min-w-0 shrink-0 flex-col gap-2 p-3.5 ${wide ? "lg:min-h-0 lg:w-1/2 lg:shrink lg:p-4" : ""}`}>
+        <span className="block min-w-0">
+          <span className="flex items-center justify-between gap-2">
+            <span className="truncate font-semibold text-mocha-text">{project.name}</span>
+            <PiArrowsOutSimpleBold
+              className="size-4 shrink-0 text-mocha-overlay2 transition duration-300 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-mocha-mauve motion-reduce:group-hover:translate-0"
+              aria-hidden
+            />
+          </span>
+          <span className="block truncate text-sm text-mocha-subtext0">{project.tagline}</span>
+        </span>
+        {wide && (
+          <span className="hidden min-h-0 text-[13px] leading-relaxed text-mocha-subtext1 lg:line-clamp-4">{project.highlights[0]}</span>
+        )}
+        {/* One line of tags; any that would wrap are hidden whole, keeping every card the same height. */}
+        <span className={`flex h-[1.375rem] shrink-0 flex-wrap gap-1 overflow-hidden ${wide ? "lg:mt-auto" : ""}`}>
+          {project.stack.slice(0, wide ? 6 : 3).map((s) => (
+            <Tag key={s}>{s}</Tag>
+          ))}
+        </span>
       </span>
     </span>
   </button>
@@ -87,11 +113,12 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 
   return (
     <>
-      <ul className="grid gap-4 sm:grid-cols-2 lg:h-full lg:grid-cols-4 lg:grid-rows-2">
-        {projects.map((p) => (
-          <li key={p.id} className="flex min-h-0 min-w-0">
+      <ul className="grid gap-4 sm:grid-cols-2 lg:h-full lg:auto-rows-fr lg:grid-cols-4">
+        {projects.map((p, i) => (
+          <li key={p.id} className={`flex min-h-0 min-w-0 ${WIDE.has(i) ? "sm:col-span-2" : ""}`}>
             <ProjectCard
               project={p}
+              wide={WIDE.has(i)}
               onOpen={() => {
                 setSelected(p);
                 setOpen(true);
@@ -139,7 +166,10 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
                       )}
                       <div className="flex flex-col gap-6 p-6">
                         <div>
-                          <p className="text-sm font-medium text-mocha-mauve">{selected.kind}</p>
+                          <p className="flex items-center gap-2 text-sm font-medium text-mocha-mauve">
+                            {selected.kind}
+                            {selected.engagement === "Freelance" && <FreelanceTag />}
+                          </p>
                           <Modal.Heading className="mt-1 text-2xl font-semibold tracking-tight text-mocha-text">
                             {selected.name}
                           </Modal.Heading>
